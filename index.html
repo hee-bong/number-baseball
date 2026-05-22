@@ -145,7 +145,6 @@
 
     .pd.elim { opacity: .15; text-decoration: line-through; pointer-events: none; }
 
-    .pool-hint { font-size: 11px; color: var(--text-dim); margin-bottom: 1.25rem; line-height: 1.5; }
 
     .drow { display: grid; grid-template-columns: repeat(var(--digits, 4), 1fr); gap: 6px; margin-bottom: 1rem; }
 
@@ -411,7 +410,6 @@
     <!-- ── NUMBER POOL (슬롯 바로 아래) ── -->
     <div class="section-label" id="label-pick">PICK A NUMBER</div>
     <div class="npool" id="npool"></div>
-    <div class="pool-hint" id="pool-hint">아웃이 나온 숫자는 자동으로 제거돼요</div>
 
     <!-- ── CONTROLS AREA ── -->
     <div id="game-controls">
@@ -489,7 +487,7 @@
 </div>
 
 <footer>
-  <div class="footer-main">⚾ NUMBER BASEBALL · v1.0.8</div>
+  <div class="footer-main">⚾ NUMBER BASEBALL · v1.0.9</div>
   <div class="footer-sub" id="footer-sub">숫자를 눌러 입력 · ENTER로 제출 · Backspace로 삭제</div>
   <div class="footer-credit">made by heebong</div>
 </footer>
@@ -512,7 +510,6 @@
       headerSub:      '숫자야구',
       gameDesc:       '숨겨진 수를 직접 맞춰요',
       helperDesc:     '친구와 대결할 때 사용해요',
-      poolHint:       '아웃이 나온 숫자는 자동으로 제거돼요',
       adLabel:        '광고',
       qrTitle:        '☕ 카카오페이 송금',
       qrSub:          'QR코드를 스캔해 주세요',
@@ -535,7 +532,6 @@
       headerSub:      'Number Baseball',
       gameDesc:       'Guess the hidden number',
       helperDesc:     'Use when playing with a friend',
-      poolHint:       'Numbers from OUT guesses are removed',
       adLabel:        'Ad',
       qrTitle:        '☕ KakaoPay Transfer',
       qrSub:          'Scan the QR code to send',
@@ -567,7 +563,6 @@
     document.getElementById('lang-btn').textContent            = lang === 'ko' ? 'EN' : 'KO';
     document.getElementById('desc-game').textContent           = t.gameDesc;
     document.getElementById('desc-helper').textContent         = t.helperDesc;
-    document.getElementById('pool-hint').textContent           = t.poolHint;
     document.getElementById('label-ad').textContent            = t.adLabel;
     document.getElementById('qr-box-title').textContent        = t.qrTitle;
     document.getElementById('qr-box-sub').textContent          = t.qrSub;
