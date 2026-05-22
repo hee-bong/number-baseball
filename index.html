@@ -12,7 +12,6 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="숫자야구 — Number Baseball">
   <meta name="twitter:description" content="숨겨진 숫자를 맞추는 클래식 두뇌 게임">
-  <!-- pixel art baseball favicon (amber on dark) -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'><rect width='16' height='16' fill='%230d1117'/><rect x='4' y='1' width='8' height='1' fill='%23fbbf24'/><rect x='2' y='2' width='12' height='1' fill='%23fbbf24'/><rect x='1' y='3' width='1' height='10' fill='%23fbbf24'/><rect x='14' y='3' width='1' height='10' fill='%23fbbf24'/><rect x='2' y='13' width='12' height='1' fill='%23fbbf24'/><rect x='4' y='14' width='8' height='1' fill='%23fbbf24'/><rect x='2' y='3' width='12' height='10' fill='%230d1117'/><rect x='4' y='3' width='2' height='1' fill='%23fbbf24'/><rect x='3' y='4' width='1' height='2' fill='%23fbbf24'/><rect x='4' y='6' width='1' height='1' fill='%23fbbf24'/><rect x='5' y='7' width='1' height='2' fill='%23fbbf24'/><rect x='4' y='9' width='1' height='1' fill='%23fbbf24'/><rect x='3' y='10' width='1' height='2' fill='%23fbbf24'/><rect x='4' y='12' width='2' height='1' fill='%23fbbf24'/><rect x='10' y='3' width='2' height='1' fill='%23fbbf24'/><rect x='12' y='4' width='1' height='2' fill='%23fbbf24'/><rect x='11' y='6' width='1' height='1' fill='%23fbbf24'/><rect x='10' y='7' width='1' height='2' fill='%23fbbf24'/><rect x='11' y='9' width='1' height='1' fill='%23fbbf24'/><rect x='12' y='10' width='1' height='2' fill='%23fbbf24'/><rect x='10' y='12' width='2' height='1' fill='%23fbbf24'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,23 +28,19 @@
       --surface-3:   #21262d;
       --border:      #2d3748;
       --border-2:    #3d4f6a;
-
       --text:        #c9d1d9;
       --text-bright: #f0f6fc;
       --text-dim:    #4a5568;
       --text-subtle: #718096;
-
       --amber:       #fbbf24;
       --amber-dark:  #92400e;
       --amber-glow:  rgba(251,191,36,.15);
-
       --strike:      #60a5fa;
       --strike-bg:   rgba(96,165,250,.1);
       --ball:        #34d399;
       --ball-bg:     rgba(52,211,153,.1);
       --out:         #f87171;
       --out-bg:      rgba(248,113,113,.1);
-
       --px: 'Press Start 2P', cursive;
       --kr: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
     }
@@ -62,108 +57,38 @@
       position: relative;
     }
 
-    /* CRT scanlines */
     body::after {
       content: '';
       position: fixed;
       inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent 0,
-        transparent 2px,
-        rgba(0,0,0,.07) 2px,
-        rgba(0,0,0,.07) 4px
-      );
+      background: repeating-linear-gradient(0deg, transparent 0, transparent 2px, rgba(0,0,0,.07) 2px, rgba(0,0,0,.07) 4px);
       pointer-events: none;
       z-index: 1000;
     }
 
-    /* ── HEADER ── */
-    header {
-      text-align: center;
-      margin-bottom: 2.25rem;
-    }
+    header { text-align: center; margin-bottom: 2.25rem; }
 
-    .header-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 1rem;
-    }
+    .header-eyebrow { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 1rem; }
 
-    .eyebrow-dot {
-      width: 6px;
-      height: 6px;
-      background: var(--amber);
-      box-shadow: 0 0 8px var(--amber);
-      animation: blink-dot 2s step-end infinite;
-    }
+    .eyebrow-dot { width: 6px; height: 6px; background: var(--amber); box-shadow: 0 0 8px var(--amber); animation: blink-dot 2s step-end infinite; }
 
-    @keyframes blink-dot {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0; }
-    }
+    @keyframes blink-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-    .eyebrow-text {
-      font-family: var(--px);
-      font-size: 7px;
-      color: var(--amber);
-      letter-spacing: 3px;
-    }
+    .eyebrow-text { font-family: var(--px); font-size: 7px; color: var(--amber); letter-spacing: 3px; }
 
-    .header-title {
-      font-family: var(--px);
-      font-size: clamp(.9rem, 4vw, 1.4rem);
-      line-height: 1.7;
-      color: var(--text-bright);
-      letter-spacing: 2px;
-      margin-bottom: .6rem;
-    }
+    .header-title { font-family: var(--px); font-size: clamp(.9rem, 4vw, 1.4rem); line-height: 1.7; color: var(--text-bright); letter-spacing: 2px; margin-bottom: .6rem; }
 
-    .header-title em {
-      font-style: normal;
-      color: var(--amber);
-      text-shadow: 0 0 20px rgba(251,191,36,.5);
-    }
+    .header-title em { font-style: normal; color: var(--amber); text-shadow: 0 0 20px rgba(251,191,36,.5); }
 
-    .header-sub {
-      font-family: var(--kr);
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-dim);
-      letter-spacing: .5px;
-    }
+    .header-sub { font-family: var(--kr); font-size: 13px; font-weight: 500; color: var(--text-dim); letter-spacing: .5px; }
 
-    /* ── CARD ── */
-    .card {
-      width: 100%;
-      max-width: 460px;
-      background: var(--surface);
-      border: 1px solid var(--border-2);
-      overflow: hidden;
-    }
+    .card { width: 100%; max-width: 460px; background: var(--surface); border: 1px solid var(--border-2); overflow: hidden; }
 
-    .card-titlebar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 16px;
-      background: var(--surface-2);
-      border-bottom: 1px solid var(--border);
-    }
+    .card-titlebar { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: var(--surface-2); border-bottom: 1px solid var(--border); }
 
-    .card-titlebar-label {
-      font-family: var(--px);
-      font-size: 7px;
-      color: var(--text-dim);
-      letter-spacing: 2px;
-    }
+    .card-titlebar-label { font-family: var(--px); font-size: 7px; color: var(--text-dim); letter-spacing: 2px; }
 
-    .traffic-lights {
-      display: flex;
-      gap: 5px;
-      align-items: center;
-    }
+    .traffic-lights { display: flex; gap: 5px; align-items: center; }
 
     .tl { width: 9px; height: 9px; border-radius: 50%; }
     .tl-r { background: #ff5f57; box-shadow: 0 0 4px rgba(255,95,87,.5); }
@@ -172,589 +97,201 @@
 
     .card-body { padding: 1.25rem; }
 
-    /* ── MODE TOGGLE ── */
-    .mode-toggle {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      border: 1px solid var(--border-2);
-      margin-bottom: 1.25rem;
-      overflow: hidden;
-    }
+    .mode-toggle { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--border-2); margin-bottom: 1.25rem; overflow: hidden; }
 
-    .mtbtn {
-      padding: 12px 8px;
-      font-family: var(--px);
-      font-size: 7px;
-      letter-spacing: 1px;
-      cursor: pointer;
-      border: none;
-      background: transparent;
-      color: var(--text-dim);
-      transition: all .12s;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-    }
+    .mtbtn { padding: 12px 8px; font-family: var(--px); font-size: 7px; letter-spacing: 1px; cursor: pointer; border: none; background: transparent; color: var(--text-dim); transition: all .12s; display: flex; flex-direction: column; align-items: center; gap: 6px; }
 
     .mtbtn + .mtbtn { border-left: 1px solid var(--border); }
 
-    .mtbtn.active {
-      background: var(--amber);
-      color: var(--bg);
-    }
+    .mtbtn.active { background: var(--amber); color: var(--bg); }
 
-    .mtbtn:not(.active):hover {
-      background: var(--surface-2);
-      color: var(--text-subtle);
-    }
+    .mtbtn:not(.active):hover { background: var(--surface-2); color: var(--text-subtle); }
 
-    .mtbtn-desc {
-      font-family: var(--kr);
-      font-size: 11px;
-      font-weight: 400;
-      letter-spacing: 0;
-      line-height: 1.3;
-      color: var(--text-dim);
-    }
+    .mtbtn-desc { font-family: var(--kr); font-size: 11px; font-weight: 400; letter-spacing: 0; line-height: 1.3; color: var(--text-dim); }
 
     .mtbtn.active .mtbtn-desc { color: rgba(13,17,23,.65); }
 
-    /* ── DIGIT SELECT ── */
-    .dtoggle {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 1.25rem;
-    }
+    .dtoggle { display: flex; align-items: center; gap: 8px; margin-bottom: 1.25rem; }
 
-    .dtoggle-label {
-      font-family: var(--px);
-      font-size: 7px;
-      color: var(--text-dim);
-      letter-spacing: 1px;
-      margin-right: 4px;
-    }
+    .dtoggle-label { font-family: var(--px); font-size: 7px; color: var(--text-dim); letter-spacing: 1px; margin-right: 4px; }
 
-    .tbtn {
-      font-family: var(--px);
-      font-size: 7px;
-      padding: 5px 14px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text-dim);
-      cursor: pointer;
-      letter-spacing: 1px;
-      transition: all .12s;
-    }
+    .tbtn { font-family: var(--px); font-size: 7px; padding: 5px 14px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); cursor: pointer; letter-spacing: 1px; transition: all .12s; }
 
-    .tbtn.active {
-      border-color: var(--amber);
-      color: var(--amber);
-      background: var(--amber-glow);
-    }
+    .tbtn.active { border-color: var(--amber); color: var(--amber); background: var(--amber-glow); }
 
-    .tbtn:not(.active):hover {
-      border-color: var(--border-2);
-      color: var(--text-subtle);
-    }
+    .tbtn:not(.active):hover { border-color: var(--border-2); color: var(--text-subtle); }
 
-    /* ── SCORE BAR ── */
-    .score-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 14px;
-      background: var(--surface-3);
-      border: 1px solid var(--border);
-      margin-bottom: 1.25rem;
-    }
+    .score-bar { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; background: var(--surface-3); border: 1px solid var(--border); margin-bottom: 1.25rem; }
 
-    .score-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .score-item { display: flex; align-items: center; gap: 10px; }
 
-    .score-label {
-      font-family: var(--px);
-      font-size: 7px;
-      color: var(--text-dim);
-      letter-spacing: 2px;
-    }
+    .score-label { font-family: var(--px); font-size: 7px; color: var(--text-dim); letter-spacing: 2px; }
 
-    .score-value {
-      font-family: var(--px);
-      font-size: 16px;
-      color: var(--amber);
-      text-shadow: 0 0 12px rgba(251,191,36,.4);
-      letter-spacing: 3px;
-    }
+    .score-value { font-family: var(--px); font-size: 16px; color: var(--amber); text-shadow: 0 0 12px rgba(251,191,36,.4); letter-spacing: 3px; }
 
-    .score-digits-badge {
-      font-family: var(--px);
-      font-size: 7px;
-      color: var(--text-dim);
-      border: 1px solid var(--border);
-      padding: 3px 8px;
-      letter-spacing: 1px;
-    }
+    .score-digits-badge { font-family: var(--px); font-size: 7px; color: var(--text-dim); border: 1px solid var(--border); padding: 3px 8px; letter-spacing: 1px; }
 
-    /* ── NUMBER POOL ── */
-    .section-label {
-      font-family: var(--px);
-      font-size: 7px;
-      color: var(--text-dim);
-      letter-spacing: 2px;
-      margin-bottom: 8px;
-    }
+    .section-label { font-family: var(--px); font-size: 7px; color: var(--text-dim); letter-spacing: 2px; margin-bottom: 8px; }
 
-    .npool {
-      display: grid;
-      grid-template-columns: repeat(10, 1fr);
-      gap: 4px;
-      margin-bottom: 6px;
-    }
+    .npool { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; margin-bottom: 6px; }
 
-    .pd {
-      aspect-ratio: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--px);
-      font-size: 11px;
-      border: 1px solid var(--border);
-      background: var(--surface-2);
-      color: var(--text);
-      cursor: pointer;
-      transition: all .08s;
-      user-select: none;
-      position: relative;
-      overflow: hidden;
-    }
+    .pd { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-family: var(--px); font-size: 11px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); cursor: pointer; transition: all .08s; user-select: none; position: relative; overflow: hidden; }
 
-    .pd::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,.04) 0%, transparent 100%);
-    }
+    .pd::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,.04) 0%, transparent 100%); }
 
-    .pd:hover {
-      border-color: var(--amber);
-      color: var(--amber);
-      box-shadow: 0 0 12px rgba(251,191,36,.2);
-    }
+    .pd:hover { border-color: var(--amber); color: var(--amber); box-shadow: 0 0 12px rgba(251,191,36,.2); }
 
     .pd:active { transform: scale(.88); }
 
-    .pd.elim {
-      opacity: .15;
-      text-decoration: line-through;
-      pointer-events: none;
-    }
+    .pd.elim { opacity: .15; text-decoration: line-through; pointer-events: none; }
 
-    .pool-hint {
-      font-size: 11px;
-      color: var(--text-dim);
-      margin-bottom: 1.25rem;
-      line-height: 1.5;
-    }
+    .pool-hint { font-size: 11px; color: var(--text-dim); margin-bottom: 1.25rem; line-height: 1.5; }
 
-    /* ── SLOTS ── */
-    .drow {
-      display: grid;
-      grid-template-columns: repeat(var(--digits, 4), 1fr);
-      gap: 6px;
-      margin-bottom: 1rem;
-    }
+    .drow { display: grid; grid-template-columns: repeat(var(--digits, 4), 1fr); gap: 6px; margin-bottom: 1rem; }
 
-    .dslot {
-      height: 68px;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--px);
-      font-size: 26px;
-      color: var(--amber);
-      cursor: pointer;
-      position: relative;
-      transition: all .1s;
-      overflow: hidden;
-    }
+    .dslot { height: 68px; border: 1px solid var(--border); background: var(--bg); display: flex; align-items: center; justify-content: center; font-family: var(--px); font-size: 26px; color: var(--amber); cursor: pointer; position: relative; transition: all .1s; overflow: hidden; }
 
-    .dslot.filled {
-      border-color: var(--amber);
-      background: var(--surface-2);
-      box-shadow: 0 0 16px rgba(251,191,36,.08);
-    }
+    .dslot.filled { border-color: var(--amber); background: var(--surface-2); box-shadow: 0 0 16px rgba(251,191,36,.08); }
 
     .dslot:not(.filled):hover { background: var(--surface-3); }
 
-    .slothint {
-      font-family: var(--px);
-      font-size: 7px;
-      color: var(--text-dim);
-      position: absolute;
-      bottom: 6px;
-    }
+    .slothint { font-family: var(--px); font-size: 7px; color: var(--text-dim); position: absolute; bottom: 6px; }
 
-    /* blinking cursor in first empty slot */
-    .dslot.cursor-slot::before {
-      content: '_';
-      font-family: var(--px);
-      font-size: 22px;
-      color: var(--amber);
-      opacity: .8;
-      animation: cursor-blink .8s step-start infinite;
-    }
+    .dslot.cursor-slot::before { content: '_'; font-family: var(--px); font-size: 22px; color: var(--amber); opacity: .8; animation: cursor-blink .8s step-start infinite; }
 
     @keyframes cursor-blink { 50% { opacity: 0; } }
 
-    @keyframes slot-pop {
-      0%   { transform: scale(.7); opacity: 0; }
-      70%  { transform: scale(1.12); }
-      100% { transform: scale(1);   opacity: 1; }
-    }
+    @keyframes slot-pop { 0% { transform: scale(.7); opacity: 0; } 70% { transform: scale(1.12); } 100% { transform: scale(1); opacity: 1; } }
 
     .dslot.pop { animation: slot-pop .18s ease-out; }
 
-    /* ── BUTTONS ── */
-    .btnrow {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-bottom: .75rem;
-    }
+    .btnrow { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: .75rem; }
 
-    .abtn {
-      font-family: var(--px);
-      font-size: 7px;
-      padding: 10px 14px;
-      border: 1px solid var(--border-2);
-      background: var(--surface-2);
-      color: var(--text);
-      cursor: pointer;
-      letter-spacing: 1px;
-      transition: all .1s;
-    }
+    .abtn { font-family: var(--px); font-size: 7px; padding: 10px 14px; border: 1px solid var(--border-2); background: var(--surface-2); color: var(--text); cursor: pointer; letter-spacing: 1px; transition: all .1s; }
 
-    .abtn:hover {
-      background: var(--surface-3);
-      border-color: var(--text-subtle);
-    }
+    .abtn:hover { background: var(--surface-3); border-color: var(--text-subtle); }
 
     .abtn:active { transform: translateY(1px); }
 
-    .abtn.primary {
-      background: var(--amber);
-      color: var(--bg);
-      border-color: var(--amber);
-    }
+    .abtn.primary { background: var(--amber); color: var(--bg); border-color: var(--amber); }
 
-    .abtn.primary:hover {
-      background: #f59e0b;
-      box-shadow: 0 0 16px rgba(251,191,36,.3);
-    }
+    .abtn.primary:hover { background: #f59e0b; box-shadow: 0 0 16px rgba(251,191,36,.3); }
 
-    .abtn:disabled {
-      opacity: .3;
-      cursor: not-allowed;
-      pointer-events: none;
-    }
+    .abtn:disabled { opacity: .3; cursor: not-allowed; pointer-events: none; }
 
-    /* ── HELPER SELECTS ── */
-    .helper-result-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-    }
+    .helper-result-row { display: flex; gap: 8px; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
 
-    .rlabel {
-      font-family: var(--px);
-      font-size: 7px;
-      color: var(--text-dim);
-      letter-spacing: 1px;
-    }
+    .rlabel { font-family: var(--px); font-size: 7px; color: var(--text-dim); letter-spacing: 1px; }
 
-    .rselect {
-      padding: 7px 10px;
-      border: 1px solid var(--border-2);
-      background: var(--surface-2);
-      color: var(--text);
-      font-family: var(--px);
-      font-size: 7px;
-      cursor: pointer;
-      outline: none;
-      transition: border-color .1s;
-    }
+    .rselect { padding: 7px 10px; border: 1px solid var(--border-2); background: var(--surface-2); color: var(--text); font-family: var(--px); font-size: 7px; cursor: pointer; outline: none; transition: border-color .1s; }
 
     .rselect:focus { border-color: var(--amber); }
 
-    /* ── STATUS ── */
-    .smsg {
-      font-family: var(--kr);
-      font-size: 12px;
-      color: var(--out);
-      min-height: 20px;
-      line-height: 1.8;
-    }
+    /* ── HELPER TABS ── */
+    .helper-tab-toggle { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--border-2); margin-bottom: 1.25rem; overflow: hidden; }
 
-    /* ── WIN ── */
-    .wmsg {
-      border: 1px solid var(--amber);
-      background: var(--amber-glow);
-      padding: 18px 16px;
-      margin-top: 1rem;
-      text-align: center;
-    }
+    .htbtn { padding: 10px 8px; font-family: var(--px); font-size: 7px; letter-spacing: 1px; cursor: pointer; border: none; border-bottom: 2px solid transparent; background: transparent; color: var(--text-dim); transition: all .12s; display: flex; flex-direction: column; align-items: center; gap: 5px; }
 
-    .wmsg-title {
-      font-family: var(--px);
-      font-size: 12px;
-      color: var(--amber);
-      margin-bottom: 8px;
-      animation: pulse-glow 1.5s ease-in-out infinite;
-    }
+    .htbtn + .htbtn { border-left: 1px solid var(--border); }
 
-    .wmsg-sub {
-      font-size: 13px;
-      color: var(--text);
-    }
+    .htbtn.active { background: var(--surface-3); color: var(--text-bright); border-bottom-color: var(--amber); }
 
-    @keyframes pulse-glow {
-      0%, 100% { text-shadow: 0 0 10px rgba(251,191,36,.4); }
-      50%       { text-shadow: 0 0 28px rgba(251,191,36,.9), 0 0 48px rgba(251,191,36,.3); }
-    }
+    .htbtn:not(.active):hover { background: var(--surface-2); }
 
-    /* ── DIVIDER ── */
-    .divider {
-      height: 1px;
-      background: var(--border);
-      margin: 1.25rem 0;
-    }
+    .htbtn-desc { font-family: var(--kr); font-size: 10px; letter-spacing: 0; opacity: .75; }
 
-    /* ── HISTORY ── */
-    .history-header {
-      font-family: var(--px);
-      font-size: 7px;
-      color: var(--text-dim);
-      letter-spacing: 2px;
-      margin-bottom: 8px;
-    }
+    /* ── MY SECRET BAR ── */
+    .my-secret-bar { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: var(--surface-3); border: 1px solid var(--border); margin-bottom: 1.25rem; }
 
-    .hbox {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+    .my-secret-lbl { font-family: var(--px); font-size: 7px; color: var(--text-dim); letter-spacing: 1px; }
 
-    .hi {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 12px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-left: 2px solid var(--border-2);
-      animation: slide-in .2s ease-out;
-    }
+    .my-secret-dots { font-family: var(--px); font-size: 14px; color: var(--amber); letter-spacing: 5px; }
+
+    .mini-btn { font-family: var(--px); font-size: 6px; padding: 4px 8px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); cursor: pointer; letter-spacing: 1px; transition: all .1s; }
+
+    .mini-btn:hover { border-color: var(--out); color: var(--out); }
+
+    /* ── THEIR RESULT ── */
+    .their-result-box { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; background: var(--surface-3); border: 1px solid var(--border); margin-bottom: 1rem; }
+
+    .smsg { font-family: var(--kr); font-size: 12px; color: var(--out); min-height: 20px; line-height: 1.8; }
+
+    .wmsg { border: 1px solid var(--amber); background: var(--amber-glow); padding: 18px 16px; margin-top: 1rem; text-align: center; }
+
+    .wmsg-title { font-family: var(--px); font-size: 12px; color: var(--amber); margin-bottom: 8px; animation: pulse-glow 1.5s ease-in-out infinite; }
+
+    .wmsg-sub { font-size: 13px; color: var(--text); }
+
+    @keyframes pulse-glow { 0%, 100% { text-shadow: 0 0 10px rgba(251,191,36,.4); } 50% { text-shadow: 0 0 28px rgba(251,191,36,.9), 0 0 48px rgba(251,191,36,.3); } }
+
+    .divider { height: 1px; background: var(--border); margin: 1.25rem 0; }
+
+    .history-header { font-family: var(--px); font-size: 7px; color: var(--text-dim); letter-spacing: 2px; margin-bottom: 8px; }
+
+    .hbox { display: flex; flex-direction: column; gap: 4px; }
+
+    .hi { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: var(--surface-2); border: 1px solid var(--border); border-left: 2px solid var(--border-2); animation: slide-in .2s ease-out; }
 
     .hi:first-child { border-left-color: var(--amber); }
 
-    @keyframes slide-in {
-      from { opacity: 0; transform: translateY(-6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    .hi.their { border-left-color: var(--strike); }
 
-    .hi-num {
-      font-family: var(--px);
-      font-size: 15px;
-      color: var(--text-bright);
-      letter-spacing: 3px;
-      min-width: 68px;
-    }
+    @keyframes slide-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .hi-num { font-family: var(--px); font-size: 15px; color: var(--text-bright); letter-spacing: 3px; min-width: 68px; }
+
+    .hi-who { font-family: var(--px); font-size: 6px; color: var(--text-dim); letter-spacing: 1px; }
 
     .rbadges { display: flex; gap: 5px; flex-wrap: wrap; }
 
-    .badge {
-      font-family: var(--px);
-      font-size: 7px;
-      padding: 4px 8px;
-      letter-spacing: 1px;
-    }
+    .badge { font-family: var(--px); font-size: 7px; padding: 4px 8px; letter-spacing: 1px; }
 
     .bs { background: var(--strike-bg); color: var(--strike); border: 1px solid rgba(96,165,250,.3); }
     .bb { background: var(--ball-bg);   color: var(--ball);   border: 1px solid rgba(52,211,153,.3); }
     .bo { background: var(--out-bg);    color: var(--out);    border: 1px solid rgba(248,113,113,.3); }
 
-    /* ── AD SLOT ── */
-    .ad-slot {
-      width: 100%;
-      max-width: 460px;
-      margin-top: 1.25rem;
-    }
+    .ad-slot { width: 100%; max-width: 460px; margin-top: 1.25rem; }
 
-    .ad-slot-label {
-      font-family: var(--kr);
-      font-size: 10px;
-      color: var(--text-dim);
-      text-align: center;
-      margin-bottom: 4px;
-      letter-spacing: 1px;
-    }
+    .ad-slot-label { font-family: var(--kr); font-size: 10px; color: var(--text-dim); text-align: center; margin-bottom: 4px; letter-spacing: 1px; }
 
-    .ad-slot-inner {
-      width: 100%;
-      min-height: 100px;
-      background: var(--surface);
-      border: 1px dashed var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-dim);
-      font-family: var(--kr);
-      font-size: 12px;
-    }
+    .ad-slot-inner { width: 100%; min-height: 100px; background: var(--surface); border: 1px dashed var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-dim); font-family: var(--kr); font-size: 12px; }
 
-    /* ── BUY ME A COFFEE ── */
-    .bmc-wrap {
-      margin-top: 1.5rem;
-      text-align: center;
-    }
+    .bmc-wrap { margin-top: 1.5rem; text-align: center; }
 
-    .bmc-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 22px;
-      background: var(--surface);
-      border: 1px solid var(--border-2);
-      color: var(--text);
-      text-decoration: none;
-      cursor: pointer;
-      transition: all .15s;
-    }
+    .bmc-btn { display: inline-flex; align-items: center; gap: 10px; padding: 12px 22px; background: var(--surface); border: 1px solid var(--border-2); color: var(--text); text-decoration: none; cursor: pointer; transition: all .15s; }
 
-    .bmc-btn:hover {
-      border-color: #f5a623;
-      color: #f5a623;
-      box-shadow: 0 0 14px rgba(245,166,35,.18);
-    }
+    .bmc-btn:hover { border-color: #f5a623; color: #f5a623; box-shadow: 0 0 14px rgba(245,166,35,.18); }
 
     .bmc-icon { font-size: 15px; }
 
-    .bmc-title {
-      font-family: var(--px);
-      font-size: 8px;
-      letter-spacing: 1px;
-    }
+    .bmc-title { font-family: var(--px); font-size: 8px; letter-spacing: 1px; }
 
-    .bmc-sub {
-      margin-top: 6px;
-      font-family: var(--kr);
-      font-size: 11px;
-      color: var(--text-dim);
-    }
-
-    /* ── QR MODAL ── */
-    .qr-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.75);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2000;
-      animation: fadein .15s ease;
-    }
+    .qr-modal { position: fixed; inset: 0; background: rgba(0,0,0,.75); display: flex; align-items: center; justify-content: center; z-index: 2000; animation: fadein .15s ease; }
 
     @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
 
-    .qr-box {
-      background: var(--surface);
-      border: 1px solid var(--border-2);
-      padding: 2rem 2.5rem;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: .75rem;
-    }
+    .qr-box { background: var(--surface); border: 1px solid var(--border-2); padding: 2rem 2.5rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: .75rem; }
 
-    .qr-box-title {
-      font-family: var(--kr);
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--text-bright);
-    }
+    .qr-box-title { font-family: var(--kr); font-size: 16px; font-weight: 600; color: var(--text-bright); }
 
-    .qr-box img {
-      display: block;
-      border: 6px solid #fff;
-    }
+    .qr-box img { display: block; border: 6px solid #fff; }
 
-    .qr-box-sub {
-      font-family: var(--kr);
-      font-size: 12px;
-      color: var(--text-dim);
-    }
+    .qr-box-sub { font-family: var(--kr); font-size: 12px; color: var(--text-dim); }
 
-    .qr-close {
-      font-family: var(--px);
-      font-size: 7px;
-      padding: 8px 18px;
-      border: 1px solid var(--border-2);
-      background: var(--surface-2);
-      color: var(--text);
-      cursor: pointer;
-      letter-spacing: 1px;
-      margin-top: .25rem;
-      transition: background .1s;
-    }
+    .qr-close { font-family: var(--px); font-size: 7px; padding: 8px 18px; border: 1px solid var(--border-2); background: var(--surface-2); color: var(--text); cursor: pointer; letter-spacing: 1px; margin-top: .25rem; transition: background .1s; }
 
     .qr-close:hover { background: var(--surface-3); }
 
-    /* ── LANG TOGGLE ── */
-    .lang-btn {
-      font-family: var(--px);
-      font-size: 7px;
-      padding: 3px 8px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text-dim);
-      cursor: pointer;
-      letter-spacing: 1px;
-      transition: all .1s;
-    }
+    .lang-btn { font-family: var(--px); font-size: 7px; padding: 3px 8px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); cursor: pointer; letter-spacing: 1px; transition: all .1s; }
+
     .lang-btn:hover { border-color: var(--amber); color: var(--amber); }
 
-    /* ── FOOTER ── */
-    footer {
-      margin-top: 2rem;
-      text-align: center;
-    }
+    footer { margin-top: 2rem; text-align: center; }
 
-    .footer-main {
-      font-family: var(--px);
-      font-size: 7px;
-      color: var(--text-dim);
-      letter-spacing: 2px;
-      margin-bottom: 6px;
-    }
+    .footer-main { font-family: var(--px); font-size: 7px; color: var(--text-dim); letter-spacing: 2px; margin-bottom: 6px; }
 
-    .footer-sub {
-      font-family: var(--kr);
-      font-size: 12px;
-      color: var(--text-dim);
-      line-height: 1.8;
-    }
+    .footer-sub { font-family: var(--kr); font-size: 12px; color: var(--text-dim); line-height: 1.8; }
 
-    /* ── MOBILE ── */
     @media (max-width: 420px) {
       body { padding: 1.5rem .75rem 4rem; }
       .header-title { font-size: clamp(.75rem, 6vw, 1.1rem); }
@@ -798,11 +335,11 @@
     <div class="mode-toggle">
       <button class="mtbtn active" id="mode-game" onclick="setMode('game')">
         GAME
-        <span class="mtbtn-desc">숨겨진 수를 직접 맞춰요</span>
+        <span class="mtbtn-desc" id="desc-game">숨겨진 수를 직접 맞춰요</span>
       </button>
       <button class="mtbtn" id="mode-helper" onclick="setMode('helper')">
         HELPER
-        <span class="mtbtn-desc">친구와 할 때 결과를 기록해요</span>
+        <span class="mtbtn-desc" id="desc-helper">친구와 대결할 때 사용해요</span>
       </button>
     </div>
 
@@ -820,9 +357,9 @@
       <span class="score-digits-badge" id="digits-badge">4-DIGIT</span>
     </div>
 
-    <div class="section-label">PICK A NUMBER</div>
+    <div class="section-label" id="label-pick">PICK A NUMBER</div>
     <div class="npool" id="npool"></div>
-    <div class="pool-hint">아웃이 나온 숫자는 자동으로 제거돼요</div>
+    <div class="pool-hint" id="pool-hint">아웃이 나온 숫자는 자동으로 제거돼요</div>
 
     <!-- 게임 모드 -->
     <div id="game-input-area">
@@ -834,30 +371,77 @@
       </div>
     </div>
 
-    <!-- 도우미 모드 -->
+    <!-- 헬퍼 모드 -->
     <div id="helper-input-area" style="display:none;">
-      <div class="drow" id="hdrow"></div>
-      <div class="helper-result-row">
-        <span class="rlabel">RESULT:</span>
-        <select class="rselect" id="sel-strike">
-          <option value="0">0S</option>
-          <option value="1">1S</option>
-          <option value="2">2S</option>
-          <option value="3">3S</option>
-          <option value="4">4S</option>
-        </select>
-        <select class="rselect" id="sel-ball">
-          <option value="0">0B</option>
-          <option value="1">1B</option>
-          <option value="2">2B</option>
-          <option value="3">3B</option>
-          <option value="4">4B</option>
-        </select>
+
+      <!-- 1단계: 내 비밀 숫자 설정 -->
+      <div id="my-secret-setup">
+        <div class="section-label" id="label-set-secret">MY SECRET NUMBER</div>
+        <div class="drow" id="sdrow"></div>
+        <div class="btnrow">
+          <button class="abtn" onclick="clearLastS()">⌫ DEL</button>
+          <button class="abtn primary" onclick="setMySecret()">SET ↵</button>
+          <button class="abtn" onclick="startGame()">RESET</button>
+        </div>
+        <div class="smsg" id="smsg-setup"></div>
       </div>
-      <div class="btnrow">
-        <button class="abtn"         onclick="clearLastH()">⌫ DEL</button>
-        <button class="abtn primary" onclick="submitHelper()">LOG ↵</button>
-        <button class="abtn"         onclick="startGame()">RESET</button>
+
+      <!-- 2단계: 탭 (비밀번호 설정 후) -->
+      <div id="helper-main" style="display:none;">
+
+        <!-- 내 비밀 숫자 표시 바 -->
+        <div class="my-secret-bar">
+          <span class="my-secret-lbl" id="label-my-secret-bar">MY SECRET</span>
+          <span class="my-secret-dots" id="my-secret-dots"></span>
+          <button class="mini-btn" onclick="resetMySecret()" id="btn-change">CHANGE</button>
+        </div>
+
+        <!-- MY TURN / THEIR TURN 탭 -->
+        <div class="helper-tab-toggle">
+          <button class="htbtn active" id="tab-my" onclick="setHelperTab('my')">
+            MY TURN
+            <span class="htbtn-desc" id="desc-my-turn">내가 추측할 때</span>
+          </button>
+          <button class="htbtn" id="tab-their" onclick="setHelperTab('their')">
+            THEIR TURN
+            <span class="htbtn-desc" id="desc-their-turn">상대가 추측할 때</span>
+          </button>
+        </div>
+
+        <!-- MY TURN: 내가 추측, 결과 수동 입력 -->
+        <div id="helper-my-area">
+          <div class="drow" id="hdrow"></div>
+          <div class="helper-result-row">
+            <span class="rlabel">RESULT:</span>
+            <select class="rselect" id="sel-strike" onchange="updateResultSelects()">
+              <option value="0">0S</option><option value="1">1S</option>
+              <option value="2">2S</option><option value="3">3S</option>
+              <option value="4">4S</option>
+            </select>
+            <select class="rselect" id="sel-ball" onchange="updateResultSelects()">
+              <option value="0">0B</option><option value="1">1B</option>
+              <option value="2">2B</option><option value="3">3B</option>
+              <option value="4">4B</option>
+            </select>
+          </div>
+          <div class="btnrow">
+            <button class="abtn" onclick="clearLastH()">⌫ DEL</button>
+            <button class="abtn primary" onclick="submitHelper()">LOG ↵</button>
+            <button class="abtn" onclick="startGame()">RESET</button>
+          </div>
+        </div>
+
+        <!-- THEIR TURN: 상대 추측 입력, 자동 S/B 계산 -->
+        <div id="helper-their-area" style="display:none;">
+          <div class="drow" id="tdrow"></div>
+          <div id="their-result" style="display:none;"></div>
+          <div class="btnrow">
+            <button class="abtn" onclick="clearLastT()">⌫ DEL</button>
+            <button class="abtn primary" onclick="submitTheirGuess()">CHECK ↵</button>
+            <button class="abtn" onclick="startGame()">RESET</button>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -873,15 +457,11 @@
   </div>
 </div>
 
-<!-- 광고 슬롯 -->
 <div class="ad-slot">
-  <div class="ad-slot-label">광고</div>
-  <div class="ad-slot-inner" id="ad-container">
-    <!-- 광고 스크립트를 여기에 삽입하세요 -->
-  </div>
+  <div class="ad-slot-label" id="label-ad">광고</div>
+  <div class="ad-slot-inner" id="ad-container"></div>
 </div>
 
-<!-- 커피 사주기 -->
 <div class="bmc-wrap">
   <a class="bmc-btn" href="https://qr.kakaopay.com/Ej7wPpW3m1f408605" target="_blank" rel="noopener" onclick="handleBmc(event)">
     <span class="bmc-icon">☕</span>
@@ -889,7 +469,6 @@
   </a>
 </div>
 
-<!-- QR 모달 (데스크탑) -->
 <div id="qr-modal" class="qr-modal" style="display:none;" onclick="closeQr()">
   <div class="qr-box" onclick="event.stopPropagation()">
     <div class="qr-box-title" id="qr-box-title">☕ 카카오페이 송금</div>
@@ -901,54 +480,64 @@
 
 <footer>
   <div class="footer-main">⚾ NUMBER BASEBALL · v1.0</div>
-  <div class="footer-sub">
-    숫자를 눌러 입력 · ENTER로 제출 · Backspace로 삭제
-  </div>
+  <div class="footer-sub" id="footer-sub">숫자를 눌러 입력 · ENTER로 제출 · Backspace로 삭제</div>
 </footer>
 
 <script>
   var secret = '', tries = 0, gameOver = false, digits = 4;
   var current = [], hcurrent = [], eliminated = {};
   var cursor = 0, hcursor = 0;
+  var mySecret = '', helperTab = 'my';
+  var scurrent = [], scursor = 0;
+  var tcurrent = [], tcursor = 0;
   var ORDER = ['1','2','3','4','5','6','7','8','9','0'];
   var mode = 'game';
   var lang = 'ko';
 
-  /* ── i18n ── */
   var T = {
     ko: {
-      headerSub:    '숫자야구',
-      gameDesc:     '숨겨진 수를 직접 맞춰요',
-      helperDesc:   '친구와 할 때 결과를 기록해요',
-      poolHint:     '아웃이 나온 숫자는 자동으로 제거돼요',
-      adLabel:      '광고',
-      qrTitle:      '☕ 카카오페이 송금',
-      qrSub:        'QR코드를 스캔해 주세요',
-      footerSub:    '숫자를 눌러 입력 · ENTER로 제출 · Backspace로 삭제',
-      msgFull:      function(n) { return '이미 ' + n + '자리를 입력했어요'; },
-      msgDup:       '이미 입력된 숫자예요',
-      msgNoZero:    '첫 번째 자리는 0이 될 수 없어요',
-      msgEnterAll:  function(n) { return n + '자리를 모두 입력해 주세요'; },
-      msgExceed:    function(n) { return '스트라이크 + 볼은 ' + n + '를 초과할 수 없어요'; },
-      winGame:      function(n) { return n + '번 만에 정답을 맞혔어요'; },
-      winHelper:    function(n) { return n + '번 만에 정답을 찾았어요'; },
+      headerSub:      '숫자야구',
+      gameDesc:       '숨겨진 수를 직접 맞춰요',
+      helperDesc:     '친구와 대결할 때 사용해요',
+      poolHint:       '아웃이 나온 숫자는 자동으로 제거돼요',
+      adLabel:        '광고',
+      qrTitle:        '☕ 카카오페이 송금',
+      qrSub:          'QR코드를 스캔해 주세요',
+      footerSub:      '숫자를 눌러 입력 · ENTER로 제출 · Backspace로 삭제',
+      setSecret:      'MY SECRET NUMBER',
+      myTurnDesc:     '내가 추측할 때',
+      theirTurnDesc:  '상대가 추측할 때',
+      mySecretBar:    'MY SECRET',
+      btnChange:      'CHANGE',
+      msgFull:        function(n) { return '이미 ' + n + '자리를 입력했어요'; },
+      msgDup:         '이미 입력된 숫자예요',
+      msgNoZero:      '첫 번째 자리는 0이 될 수 없어요',
+      msgEnterAll:    function(n) { return n + '자리를 모두 입력해 주세요'; },
+      msgExceed:      function(n) { return '스트라이크 + 볼은 ' + n + '를 초과할 수 없어요'; },
+      winGame:        function(n) { return n + '번 만에 정답을 맞혔어요'; },
+      winHelper:      function(n) { return n + '번 만에 정답을 찾았어요'; },
     },
     en: {
-      headerSub:    'Number Baseball',
-      gameDesc:     'Guess the hidden number',
-      helperDesc:   'Track results with a friend',
-      poolHint:     'Numbers from OUT guesses are removed',
-      adLabel:      'Ad',
-      qrTitle:      '☕ KakaoPay Transfer',
-      qrSub:        'Scan the QR code to send',
-      footerSub:    'Click numbers · ENTER to submit · Backspace to delete',
-      msgFull:      function(n) { return 'Already ' + n + ' digits entered!'; },
-      msgDup:       'That number is already in!',
-      msgNoZero:    'First digit cannot be 0',
-      msgEnterAll:  function(n) { return 'Enter all ' + n + ' digits first'; },
-      msgExceed:    function(n) { return 'Strike + Ball cannot exceed ' + n; },
-      winGame:      function(n) { return 'Solved in ' + n + ' tries!'; },
-      winHelper:    function(n) { return 'Found in ' + n + ' tries!'; },
+      headerSub:      'Number Baseball',
+      gameDesc:       'Guess the hidden number',
+      helperDesc:     'Use when playing with a friend',
+      poolHint:       'Numbers from OUT guesses are removed',
+      adLabel:        'Ad',
+      qrTitle:        '☕ KakaoPay Transfer',
+      qrSub:          'Scan the QR code to send',
+      footerSub:      'Click numbers · ENTER to submit · Backspace to delete',
+      setSecret:      'MY SECRET NUMBER',
+      myTurnDesc:     'When I guess',
+      theirTurnDesc:  'When they guess',
+      mySecretBar:    'MY SECRET',
+      btnChange:      'CHANGE',
+      msgFull:        function(n) { return 'Already ' + n + ' digits entered!'; },
+      msgDup:         'That number is already in!',
+      msgNoZero:      'First digit cannot be 0',
+      msgEnterAll:    function(n) { return 'Enter all ' + n + ' digits first'; },
+      msgExceed:      function(n) { return 'Strike + Ball cannot exceed ' + n; },
+      winGame:        function(n) { return 'Solved in ' + n + ' tries!'; },
+      winHelper:      function(n) { return 'Found in ' + n + ' tries!'; },
     }
   };
 
@@ -960,23 +549,26 @@
 
   function applyLang() {
     var t = T[lang];
-    document.getElementById('lang-btn').textContent         = lang === 'ko' ? 'EN' : 'KO';
-    document.getElementById('header-sub').textContent       = t.headerSub;
-    document.querySelector('#mode-game .mtbtn-desc').textContent   = t.gameDesc;
-    document.querySelector('#mode-helper .mtbtn-desc').textContent = t.helperDesc;
-    document.querySelector('.pool-hint').textContent        = t.poolHint;
-    document.querySelector('.ad-slot-label').textContent    = t.adLabel;
-    document.getElementById('qr-box-title').textContent     = t.qrTitle;
-    document.getElementById('qr-box-sub').textContent       = t.qrSub;
-    document.querySelector('.footer-sub').textContent       = t.footerSub;
+    document.getElementById('lang-btn').textContent            = lang === 'ko' ? 'EN' : 'KO';
+    document.getElementById('header-sub').textContent          = t.headerSub;
+    document.getElementById('desc-game').textContent           = t.gameDesc;
+    document.getElementById('desc-helper').textContent         = t.helperDesc;
+    document.getElementById('pool-hint').textContent           = t.poolHint;
+    document.getElementById('label-ad').textContent            = t.adLabel;
+    document.getElementById('qr-box-title').textContent        = t.qrTitle;
+    document.getElementById('qr-box-sub').textContent          = t.qrSub;
+    document.getElementById('footer-sub').textContent          = t.footerSub;
+    document.getElementById('label-set-secret').textContent    = t.setSecret;
+    document.getElementById('desc-my-turn').textContent        = t.myTurnDesc;
+    document.getElementById('desc-their-turn').textContent     = t.theirTurnDesc;
+    document.getElementById('label-my-secret-bar').textContent = t.mySecretBar;
+    document.getElementById('btn-change').textContent          = t.btnChange;
   }
 
-  /* ── HELPERS ── */
   function fmt(n)     { return String(n).padStart(3, '0'); }
   function setMsg(m)  { document.getElementById('smsg').textContent = m; }
   function clearMsg() { document.getElementById('smsg').textContent = ''; }
 
-  /* ── MODE / DIGIT SETUP ── */
   function setMode(m) {
     mode = m;
     document.getElementById('mode-game').className   = 'mtbtn' + (m === 'game'   ? ' active' : '');
@@ -992,40 +584,29 @@
     document.getElementById('btn4').className = 'tbtn' + (n === 4 ? ' active' : '');
     document.getElementById('digits-badge').textContent = n + '-DIGIT';
     document.documentElement.style.setProperty('--digits', n);
-
     var ss = document.getElementById('sel-strike');
     var sb = document.getElementById('sel-ball');
     while (ss.options.length > n + 1) ss.remove(ss.options.length - 1);
-    while (ss.options.length < n + 1) {
-      var o = document.createElement('option');
-      o.value = ss.options.length; o.textContent = ss.options.length + 'S';
-      ss.appendChild(o);
-    }
+    while (ss.options.length < n + 1) { var o = document.createElement('option'); o.value = ss.options.length; o.textContent = ss.options.length + 'S'; ss.appendChild(o); }
     while (sb.options.length > n + 1) sb.remove(sb.options.length - 1);
-    while (sb.options.length < n + 1) {
-      var o = document.createElement('option');
-      o.value = sb.options.length; o.textContent = sb.options.length + 'B';
-      sb.appendChild(o);
-    }
+    while (sb.options.length < n + 1) { var o = document.createElement('option'); o.value = sb.options.length; o.textContent = sb.options.length + 'B'; sb.appendChild(o); }
     startGame();
   }
 
-  /* ── GAME LOGIC ── */
   function genSecret() {
     var pool = ORDER.slice().sort(function() { return Math.random() - .5; }).slice(0, digits);
-    if (pool[0] === '0') {
-      var i = Math.floor(Math.random() * (digits - 1)) + 1;
-      var t = pool[0]; pool[0] = pool[i]; pool[i] = t;
-    }
+    if (pool[0] === '0') { var i = Math.floor(Math.random() * (digits - 1)) + 1; var t = pool[0]; pool[0] = pool[i]; pool[i] = t; }
     return pool.join('');
   }
 
   function startGame() {
     secret = genSecret();
     tries = 0; gameOver = false;
-    current = new Array(digits).fill(null);
-    hcurrent = new Array(digits).fill(null);
-    cursor = 0; hcursor = 0;
+    current  = new Array(digits).fill(null); cursor  = 0;
+    hcurrent = new Array(digits).fill(null); hcursor = 0;
+    scurrent = new Array(digits).fill(null); scursor = 0;
+    tcurrent = new Array(digits).fill(null); tcursor = 0;
+    mySecret = ''; helperTab = 'my';
     eliminated = {};
     document.getElementById('tries').textContent = '000';
     document.getElementById('hbox').innerHTML = '';
@@ -1035,11 +616,19 @@
     var sb = document.getElementById('subbtn');
     if (sb) sb.disabled = false;
     document.documentElement.style.setProperty('--digits', digits);
-    renderPool(); renderDisplay(); renderDisplayH();
+    if (mode === 'helper') {
+      document.getElementById('my-secret-setup').style.display = '';
+      document.getElementById('helper-main').style.display = 'none';
+      document.getElementById('smsg-setup').textContent = '';
+      var tr = document.getElementById('their-result');
+      if (tr) tr.style.display = 'none';
+      renderDisplayS();
+    }
+    renderPool(); renderDisplay(); renderDisplayH(); renderDisplayT();
     applyLang();
   }
 
-  /* ── RENDER ── */
+  /* ── RENDER POOL ── */
   function renderPool() {
     var c = document.getElementById('npool');
     c.innerHTML = '';
@@ -1050,118 +639,207 @@
       el.textContent = d;
       (function(digit) {
         el.addEventListener('click', function() {
-          if (mode === 'game') addDigit(digit); else addDigitH(digit);
+          if (mode === 'game') {
+            addDigit(digit);
+          } else if (mode === 'helper') {
+            if (!mySecret) addSecretDigit(digit);
+            else if (helperTab === 'my') addDigitH(digit);
+            else addDigitT(digit);
+          }
         });
       })(d);
       c.appendChild(el);
     }
   }
 
+  /* ── RENDER GAME DISPLAY ── */
   function renderDisplay() {
     var row = document.getElementById('drow');
     row.innerHTML = '';
     for (var i = 0; i < digits; i++) {
       var slot = document.createElement('div');
       slot.className = 'dslot' + (current[i] ? ' filled' : '') + (!current[i] && i === cursor ? ' cursor-slot' : '');
-      if (current[i]) {
-        slot.textContent = current[i];
-      } else {
-        var h = document.createElement('span'); h.className = 'slothint'; h.textContent = i + 1; slot.appendChild(h);
-      }
+      if (current[i]) { slot.textContent = current[i]; }
+      else { var h = document.createElement('span'); h.className = 'slothint'; h.textContent = i + 1; slot.appendChild(h); }
       (function(idx) {
         slot.addEventListener('click', function() {
           if (gameOver) return;
           if (current[idx]) { current[idx] = null; }
-          cursor = idx;
-          clearMsg();
-          renderDisplay();
+          cursor = idx; clearMsg(); renderDisplay();
         });
       })(i);
       row.appendChild(slot);
     }
   }
 
+  /* ── RENDER MY TURN (HELPER) ── */
   function renderDisplayH() {
     var row = document.getElementById('hdrow');
     row.innerHTML = '';
     for (var i = 0; i < digits; i++) {
       var slot = document.createElement('div');
       slot.className = 'dslot' + (hcurrent[i] ? ' filled' : '') + (!hcurrent[i] && i === hcursor ? ' cursor-slot' : '');
-      if (hcurrent[i]) {
-        slot.textContent = hcurrent[i];
-      } else {
-        var h = document.createElement('span'); h.className = 'slothint'; h.textContent = i + 1; slot.appendChild(h);
-      }
+      if (hcurrent[i]) { slot.textContent = hcurrent[i]; }
+      else { var h = document.createElement('span'); h.className = 'slothint'; h.textContent = i + 1; slot.appendChild(h); }
       (function(idx) {
         slot.addEventListener('click', function() {
           if (hcurrent[idx]) { hcurrent[idx] = null; }
-          hcursor = idx;
-          clearMsg();
-          renderDisplayH();
+          hcursor = idx; clearMsg(); renderDisplayH();
         });
       })(i);
       row.appendChild(slot);
     }
   }
 
-  /* ── INPUT ── */
+  /* ── RENDER SECRET SETUP ── */
+  function renderDisplayS() {
+    var row = document.getElementById('sdrow');
+    if (!row) return;
+    row.innerHTML = '';
+    for (var i = 0; i < digits; i++) {
+      var slot = document.createElement('div');
+      slot.className = 'dslot' + (scurrent[i] ? ' filled' : '') + (!scurrent[i] && i === scursor ? ' cursor-slot' : '');
+      if (scurrent[i]) {
+        slot.textContent = scurrent[i];
+      } else {
+        var h = document.createElement('span'); h.className = 'slothint'; h.textContent = i + 1; slot.appendChild(h);
+      }
+      (function(idx) {
+        slot.addEventListener('click', function() {
+          if (scurrent[idx]) { scurrent[idx] = null; }
+          scursor = idx;
+          document.getElementById('smsg-setup').textContent = '';
+          renderDisplayS();
+        });
+      })(i);
+      row.appendChild(slot);
+    }
+  }
+
+  /* ── RENDER THEIR TURN ── */
+  function renderDisplayT() {
+    var row = document.getElementById('tdrow');
+    if (!row) return;
+    row.innerHTML = '';
+    for (var i = 0; i < digits; i++) {
+      var slot = document.createElement('div');
+      slot.className = 'dslot' + (tcurrent[i] ? ' filled' : '') + (!tcurrent[i] && i === tcursor ? ' cursor-slot' : '');
+      if (tcurrent[i]) { slot.textContent = tcurrent[i]; }
+      else { var h = document.createElement('span'); h.className = 'slothint'; h.textContent = i + 1; slot.appendChild(h); }
+      (function(idx) {
+        slot.addEventListener('click', function() {
+          if (tcurrent[idx]) { tcurrent[idx] = null; }
+          tcursor = idx; clearMsg(); renderDisplayT();
+        });
+      })(i);
+      row.appendChild(slot);
+    }
+  }
+
+  /* ── INPUT HELPERS ── */
+  function addToSlot(arr, cur, setCursor, d, onUpdate) {
+    var count = 0; for (var i = 0; i < digits; i++) if (arr[i]) count++;
+    if (count >= digits) { setMsg(T[lang].msgFull(digits)); return cur; }
+    for (var i = 0; i < digits; i++) { if (arr[i] === d) { setMsg(T[lang].msgDup); return cur; } }
+    var target = (cur < digits && !arr[cur]) ? cur : -1;
+    if (target === -1) { for (var i = 0; i < digits; i++) { if (!arr[i]) { target = i; break; } } }
+    if (target === -1) { setMsg(T[lang].msgFull(digits)); return cur; }
+    if (target === 0 && d === '0') { setMsg(T[lang].msgNoZero); return cur; }
+    clearMsg();
+    arr[target] = d;
+    var next = -1;
+    for (var i = target + 1; i < digits; i++) { if (!arr[i]) { next = i; break; } }
+    if (next === -1) for (var i = 0; i < target; i++) { if (!arr[i]) { next = i; break; } }
+    var newCur = next === -1 ? digits : next;
+    onUpdate(target);
+    return newCur;
+  }
+
   function addDigit(d) {
     if (gameOver) return;
-    var count = 0; for (var i = 0; i < digits; i++) if (current[i]) count++;
-    if (count >= digits) { setMsg(T[lang].msgFull(digits)); return; }
-    for (var i = 0; i < digits; i++) { if (current[i] === d) { setMsg(T[lang].msgDup); return; } }
-    var target = (cursor < digits && !current[cursor]) ? cursor : -1;
-    if (target === -1) {
-      for (var i = 0; i < digits; i++) { if (!current[i]) { target = i; break; } }
-    }
-    if (target === -1) { setMsg(T[lang].msgFull(digits)); return; }
-    if (target === 0 && d === '0') { setMsg(T[lang].msgNoZero); return; }
-    clearMsg();
-    current[target] = d;
-    var next = -1;
-    for (var i = target + 1; i < digits; i++) { if (!current[i]) { next = i; break; } }
-    if (next === -1) for (var i = 0; i < target; i++) { if (!current[i]) { next = i; break; } }
-    cursor = next === -1 ? digits : next;
-    renderDisplay();
-    var slots = document.getElementById('drow').querySelectorAll('.dslot');
-    var s = slots[target];
-    if (s) { s.classList.remove('pop'); void s.offsetWidth; s.classList.add('pop'); }
+    cursor = addToSlot(current, cursor, cursor, d, function(target) {
+      renderDisplay();
+      var slots = document.getElementById('drow').querySelectorAll('.dslot');
+      var s = slots[target];
+      if (s) { s.classList.remove('pop'); void s.offsetWidth; s.classList.add('pop'); }
+    });
   }
 
   function addDigitH(d) {
-    var count = 0; for (var i = 0; i < digits; i++) if (hcurrent[i]) count++;
-    if (count >= digits) { setMsg(T[lang].msgFull(digits)); return; }
-    for (var i = 0; i < digits; i++) { if (hcurrent[i] === d) { setMsg(T[lang].msgDup); return; } }
-    var target = (hcursor < digits && !hcurrent[hcursor]) ? hcursor : -1;
-    if (target === -1) {
-      for (var i = 0; i < digits; i++) { if (!hcurrent[i]) { target = i; break; } }
-    }
-    if (target === -1) { setMsg(T[lang].msgFull(digits)); return; }
-    if (target === 0 && d === '0') { setMsg(T[lang].msgNoZero); return; }
-    clearMsg();
-    hcurrent[target] = d;
+    hcursor = addToSlot(hcurrent, hcursor, hcursor, d, function() { renderDisplayH(); });
+  }
+
+  function addSecretDigit(d) {
+    var count = 0; for (var i = 0; i < digits; i++) if (scurrent[i]) count++;
+    if (count >= digits) return;
+    for (var i = 0; i < digits; i++) { if (scurrent[i] === d) return; }
+    var target = (scursor < digits && !scurrent[scursor]) ? scursor : -1;
+    if (target === -1) { for (var i = 0; i < digits; i++) { if (!scurrent[i]) { target = i; break; } } }
+    if (target === -1) return;
+    if (target === 0 && d === '0') { document.getElementById('smsg-setup').textContent = T[lang].msgNoZero; return; }
+    scurrent[target] = d;
     var next = -1;
-    for (var i = target + 1; i < digits; i++) { if (!hcurrent[i]) { next = i; break; } }
-    if (next === -1) for (var i = 0; i < target; i++) { if (!hcurrent[i]) { next = i; break; } }
-    hcursor = next === -1 ? digits : next;
-    renderDisplayH();
+    for (var i = target + 1; i < digits; i++) { if (!scurrent[i]) { next = i; break; } }
+    scursor = next === -1 ? digits : next;
+    renderDisplayS();
+  }
+
+  function addDigitT(d) {
+    tcursor = addToSlot(tcurrent, tcursor, tcursor, d, function() { renderDisplayT(); });
   }
 
   function clearLast() {
     if (gameOver) return;
-    for (var i = digits - 1; i >= 0; i--) {
-      if (current[i]) { current[i] = null; cursor = i; break; }
-    }
+    for (var i = digits - 1; i >= 0; i--) { if (current[i]) { current[i] = null; cursor = i; break; } }
     renderDisplay();
   }
+
   function clearLastH() {
-    for (var i = digits - 1; i >= 0; i--) {
-      if (hcurrent[i]) { hcurrent[i] = null; hcursor = i; break; }
-    }
+    for (var i = digits - 1; i >= 0; i--) { if (hcurrent[i]) { hcurrent[i] = null; hcursor = i; break; } }
     renderDisplayH();
   }
 
-  /* ── SUBMIT ── */
+  function clearLastS() {
+    for (var i = digits - 1; i >= 0; i--) { if (scurrent[i]) { scurrent[i] = null; scursor = i; break; } }
+    renderDisplayS();
+  }
+
+  function clearLastT() {
+    for (var i = digits - 1; i >= 0; i--) { if (tcurrent[i]) { tcurrent[i] = null; tcursor = i; break; } }
+    renderDisplayT();
+    document.getElementById('their-result').style.display = 'none';
+  }
+
+  /* ── SET / RESET SECRET ── */
+  function setMySecret() {
+    var count = 0; for (var i = 0; i < digits; i++) if (scurrent[i]) count++;
+    if (count !== digits) { document.getElementById('smsg-setup').textContent = T[lang].msgEnterAll(digits); return; }
+    mySecret = scurrent.join('');
+    document.getElementById('my-secret-setup').style.display = 'none';
+    document.getElementById('helper-main').style.display = '';
+    document.getElementById('my-secret-dots').textContent = '●'.repeat(digits);
+    setHelperTab('my');
+  }
+
+  function resetMySecret() {
+    mySecret = '';
+    scurrent = new Array(digits).fill(null); scursor = 0;
+    document.getElementById('my-secret-setup').style.display = '';
+    document.getElementById('helper-main').style.display = 'none';
+    document.getElementById('smsg-setup').textContent = '';
+    renderDisplayS();
+  }
+
+  function setHelperTab(tab) {
+    helperTab = tab;
+    document.getElementById('tab-my').className    = 'htbtn' + (tab === 'my'    ? ' active' : '');
+    document.getElementById('tab-their').className = 'htbtn' + (tab === 'their' ? ' active' : '');
+    document.getElementById('helper-my-area').style.display    = tab === 'my'    ? '' : 'none';
+    document.getElementById('helper-their-area').style.display = tab === 'their' ? '' : 'none';
+    clearMsg();
+  }
+
+  /* ── SUBMIT GAME ── */
   function submitGuess() {
     if (gameOver) return;
     var count = 0; for (var i = 0; i < digits; i++) if (current[i]) count++;
@@ -1169,7 +847,6 @@
     var guess = current.join('');
     clearMsg();
     tries++; document.getElementById('tries').textContent = fmt(tries);
-
     var s = 0, b = 0;
     for (var i = 0; i < digits; i++) {
       if (guess[i] === secret[i]) s++;
@@ -1178,18 +855,32 @@
     var isOut = (s === 0 && b === 0);
     if (isOut) { for (var i = 0; i < digits; i++) eliminated[guess[i]] = true; }
     renderPool();
-    addHistory(guess, s, b, isOut);
-    current = []; renderDisplay();
-
+    addHistory(guess, s, b, isOut, false);
+    current = new Array(digits).fill(null); cursor = 0; renderDisplay();
     if (s === digits) {
       gameOver = true;
       document.getElementById('subbtn').disabled = true;
-      document.getElementById('winarea').innerHTML =
-        '<div class="wmsg"><div class="wmsg-title">PERFECT!</div>' +
-        '<div class="wmsg-sub">' + T[lang].winGame(tries) + '</div></div>';
+      document.getElementById('winarea').innerHTML = '<div class="wmsg"><div class="wmsg-title">PERFECT!</div><div class="wmsg-sub">' + T[lang].winGame(tries) + '</div></div>';
     }
   }
 
+  /* ── RESULT SELECT 연동 ── */
+  function updateResultSelects() {
+    var ss = document.getElementById('sel-strike');
+    var sb = document.getElementById('sel-ball');
+    var s = parseInt(ss.value);
+    var b = parseInt(sb.value);
+    var maxB = digits - s;
+    var maxS = digits - b;
+    while (sb.options.length > maxB + 1) sb.remove(sb.options.length - 1);
+    while (sb.options.length < maxB + 1) { var o = document.createElement('option'); o.value = sb.options.length; o.textContent = sb.options.length + 'B'; sb.appendChild(o); }
+    if (parseInt(sb.value) > maxB) sb.value = String(maxB);
+    while (ss.options.length > maxS + 1) ss.remove(ss.options.length - 1);
+    while (ss.options.length < maxS + 1) { var o = document.createElement('option'); o.value = ss.options.length; o.textContent = ss.options.length + 'S'; ss.appendChild(o); }
+    if (parseInt(ss.value) > maxS) ss.value = String(maxS);
+  }
+
+  /* ── SUBMIT HELPER MY TURN ── */
   function submitHelper() {
     var count = 0; for (var i = 0; i < digits; i++) if (hcurrent[i]) count++;
     if (count !== digits) { setMsg(T[lang].msgEnterAll(digits)); return; }
@@ -1199,70 +890,105 @@
     if (s + b > digits) { setMsg(T[lang].msgExceed(digits)); return; }
     clearMsg();
     tries++; document.getElementById('tries').textContent = fmt(tries);
-
     var isOut = (s === 0 && b === 0);
     if (isOut) { for (var i = 0; i < digits; i++) eliminated[guess[i]] = true; }
     renderPool();
-    addHistory(guess, s, b, isOut);
-    hcurrent = []; renderDisplayH();
+    addHistory(guess, s, b, isOut, false);
+    hcurrent = new Array(digits).fill(null); hcursor = 0; renderDisplayH();
     document.getElementById('sel-strike').value = '0';
     document.getElementById('sel-ball').value   = '0';
-
     if (s === digits) {
-      document.getElementById('winarea').innerHTML =
-        '<div class="wmsg"><div class="wmsg-title">FOUND IT!</div>' +
-        '<div class="wmsg-sub">' + T[lang].winHelper(tries) + '</div></div>';
+      document.getElementById('winarea').innerHTML = '<div class="wmsg"><div class="wmsg-title">FOUND IT!</div><div class="wmsg-sub">' + T[lang].winHelper(tries) + '</div></div>';
     }
   }
 
-  /* ── HISTORY ── */
-  function addHistory(guess, s, b, isOut) {
-    document.getElementById('history-section').style.display = '';
-    var item = document.createElement('div'); item.className = 'hi';
-    var num = document.createElement('span'); num.className = 'hi-num'; num.textContent = guess;
-    var badges = document.createElement('div'); badges.className = 'rbadges';
+  /* ── SUBMIT THEIR TURN (자동 계산) ── */
+  function submitTheirGuess() {
+    var count = 0; for (var i = 0; i < digits; i++) if (tcurrent[i]) count++;
+    if (count !== digits) { setMsg(T[lang].msgEnterAll(digits)); return; }
+    var guess = tcurrent.join('');
+    clearMsg();
+    var s = 0, b = 0;
+    for (var i = 0; i < digits; i++) {
+      if (guess[i] === mySecret[i]) s++;
+      else if (mySecret.indexOf(guess[i]) >= 0) b++;
+    }
+    var isOut = (s === 0 && b === 0);
+    var html = '<div class="their-result-box">';
+    if (s > 0) html += '<span class="badge bs">' + s + 'S</span>';
+    if (b > 0) html += '<span class="badge bb">' + b + 'B</span>';
+    if (isOut) html += '<span class="badge bo">OUT</span>';
+    if (s === digits) html += '<span class="badge bs" style="background:var(--amber-glow);color:var(--amber);border-color:var(--amber);">PERFECT!</span>';
+    html += '</div>';
+    var resultEl = document.getElementById('their-result');
+    resultEl.innerHTML = html;
+    resultEl.style.display = '';
+    addHistory(guess, s, b, isOut, true);
+    tcurrent = new Array(digits).fill(null); tcursor = 0; renderDisplayT();
+  }
 
+  /* ── HISTORY ── */
+  function addHistory(guess, s, b, isOut, isTheir) {
+    document.getElementById('history-section').style.display = '';
+    var item = document.createElement('div');
+    item.className = 'hi' + (isTheir ? ' their' : '');
+    var left = document.createElement('div');
+    left.style.display = 'flex'; left.style.flexDirection = 'column'; left.style.gap = '3px';
+    var num = document.createElement('span'); num.className = 'hi-num'; num.textContent = guess;
+    left.appendChild(num);
+    if (isTheir !== undefined && mode === 'helper') {
+      var who = document.createElement('span'); who.className = 'hi-who';
+      who.textContent = isTheir ? 'THEIR' : 'MINE';
+      left.appendChild(who);
+    }
+    var badges = document.createElement('div'); badges.className = 'rbadges';
     if (s > 0) { var bd = document.createElement('span'); bd.className = 'badge bs'; bd.textContent = s + 'S'; badges.appendChild(bd); }
     if (b > 0) { var bd = document.createElement('span'); bd.className = 'badge bb'; bd.textContent = b + 'B'; badges.appendChild(bd); }
     if (isOut) { var bd = document.createElement('span'); bd.className = 'badge bo'; bd.textContent = 'OUT';  badges.appendChild(bd); }
-
-    item.appendChild(num); item.appendChild(badges);
+    item.appendChild(left); item.appendChild(badges);
     var hbox = document.getElementById('hbox');
     hbox.insertBefore(item, hbox.firstChild);
+    setTimeout(function() { item.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 50);
   }
 
   /* ── KEYBOARD ── */
   document.addEventListener('keydown', function(e) {
     if (e.key >= '0' && e.key <= '9') {
       if (mode === 'game' && !gameOver) addDigit(e.key);
-      else if (mode === 'helper') addDigitH(e.key);
+      else if (mode === 'helper') {
+        if (!mySecret) addSecretDigit(e.key);
+        else if (helperTab === 'my') addDigitH(e.key);
+        else addDigitT(e.key);
+      }
     } else if (e.key === 'Backspace') {
       if (mode === 'game' && !gameOver) clearLast();
-      else if (mode === 'helper') clearLastH();
+      else if (mode === 'helper') {
+        if (!mySecret) clearLastS();
+        else if (helperTab === 'my') clearLastH();
+        else clearLastT();
+      }
     } else if (e.key === 'Enter') {
       if (mode === 'game' && !gameOver) submitGuess();
-      else if (mode === 'helper') submitHelper();
+      else if (mode === 'helper') {
+        if (!mySecret) setMySecret();
+        else if (helperTab === 'my') submitHelper();
+        else submitTheirGuess();
+      }
     }
   });
 
   /* ── KAKAO PAY QR ── */
-  function isMobile() {
-    return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  }
+  function isMobile() { return 'ontouchstart' in window || navigator.maxTouchPoints > 0; }
 
   function handleBmc(e) {
-    if (isMobile()) return; // 모바일: 링크 그대로 열기
+    if (isMobile()) return;
     e.preventDefault();
     document.getElementById('qr-modal').style.display = 'flex';
   }
 
-  function closeQr() {
-    document.getElementById('qr-modal').style.display = 'none';
-  }
+  function closeQr() { document.getElementById('qr-modal').style.display = 'none'; }
 
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeQr();
-  });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeQr(); });
 
   startGame();
 </script>
