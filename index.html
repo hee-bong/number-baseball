@@ -187,6 +187,15 @@
 
     .rselect:focus { border-color: var(--amber); }
 
+    /* ── SECRET SETUP ── */
+    .secret-setup-header { text-align: center; padding: 1.25rem 0 1rem; }
+    .secret-step-badge { font-family: var(--px); font-size: 7px; color: var(--strike); letter-spacing: 2px; margin-bottom: .75rem; }
+    .secret-setup-title { font-family: var(--kr); font-size: 18px; font-weight: 700; color: var(--text-bright); margin-bottom: .4rem; }
+    .secret-setup-desc { font-family: var(--kr); font-size: 13px; color: var(--text-subtle); }
+    .secret-drow .dslot { border-color: var(--strike); color: var(--strike); }
+    .secret-drow .dslot.filled { background: var(--strike-bg); border-color: var(--strike); box-shadow: 0 0 16px rgba(96,165,250,.12); }
+    .secret-drow .dslot.cursor-slot::before { color: var(--strike); }
+
     /* ── HELPER TABS ── */
     .helper-tab-toggle { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--border-2); margin-bottom: 1.25rem; overflow: hidden; }
 
@@ -376,12 +385,15 @@
 
       <!-- 1단계: 내 비밀 숫자 설정 -->
       <div id="my-secret-setup">
-        <div class="section-label" id="label-set-secret">MY SECRET NUMBER</div>
-        <div class="drow" id="sdrow"></div>
+        <div class="secret-setup-header">
+          <div class="secret-step-badge">STEP 1 / 2</div>
+          <div class="secret-setup-title" id="label-set-secret">내 비밀 숫자를 정해주세요</div>
+          <div class="secret-setup-desc" id="desc-set-secret">상대방이 맞춰야 할 숫자예요</div>
+        </div>
+        <div class="drow secret-drow" id="sdrow"></div>
         <div class="btnrow">
           <button class="abtn" onclick="clearLastS()">⌫ DEL</button>
-          <button class="abtn primary" onclick="setMySecret()">SET ↵</button>
-          <button class="abtn" onclick="startGame()">RESET</button>
+          <button class="abtn primary" onclick="setMySecret()" id="btn-start-game">START GAME ↵</button>
         </div>
         <div class="smsg" id="smsg-setup"></div>
       </div>
@@ -504,7 +516,8 @@
       qrTitle:        '☕ 카카오페이 송금',
       qrSub:          'QR코드를 스캔해 주세요',
       footerSub:      '숫자를 눌러 입력 · ENTER로 제출 · Backspace로 삭제',
-      setSecret:      'MY SECRET NUMBER',
+      setSecret:      '내 비밀 숫자를 정해주세요',
+      descSetSecret:  '상대방이 맞춰야 할 숫자예요',
       myTurnDesc:     '내가 추측할 때',
       theirTurnDesc:  '상대가 추측할 때',
       mySecretBar:    'MY SECRET',
@@ -526,7 +539,8 @@
       qrTitle:        '☕ KakaoPay Transfer',
       qrSub:          'Scan the QR code to send',
       footerSub:      'Click numbers · ENTER to submit · Backspace to delete',
-      setSecret:      'MY SECRET NUMBER',
+      setSecret:      'Set your secret number',
+      descSetSecret:  'Your opponent has to guess this',
       myTurnDesc:     'When I guess',
       theirTurnDesc:  'When they guess',
       mySecretBar:    'MY SECRET',
@@ -559,6 +573,7 @@
     document.getElementById('qr-box-sub').textContent          = t.qrSub;
     document.getElementById('footer-sub').textContent          = t.footerSub;
     document.getElementById('label-set-secret').textContent    = t.setSecret;
+    document.getElementById('desc-set-secret').textContent     = t.descSetSecret;
     document.getElementById('desc-my-turn').textContent        = t.myTurnDesc;
     document.getElementById('desc-their-turn').textContent     = t.theirTurnDesc;
     document.getElementById('label-my-secret-bar').textContent = t.mySecretBar;
@@ -817,7 +832,7 @@
     mySecret = scurrent.join('');
     document.getElementById('my-secret-setup').style.display = 'none';
     document.getElementById('helper-main').style.display = '';
-    document.getElementById('my-secret-dots').textContent = '●'.repeat(digits);
+    document.getElementById('my-secret-dots').textContent = mySecret;
     setHelperTab('my');
   }
 
