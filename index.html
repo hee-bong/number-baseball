@@ -3,7 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>숫자야구 — NUMBER BASEBALL</title>
+  <title>숫자야구 — Number Baseball</title>
+  <meta name="description" content="숫자야구 — 숨겨진 N자리 숫자를 스트라이크·볼 힌트로 맞추는 클래식 두뇌 게임">
+  <meta name="keywords" content="숫자야구, number baseball, 숫자게임, 두뇌게임, 추리게임">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="숫자야구 — Number Baseball">
+  <meta property="og:description" content="숨겨진 숫자를 맞추는 클래식 두뇌 게임">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="숫자야구 — Number Baseball">
+  <meta name="twitter:description" content="숨겨진 숫자를 맞추는 클래식 두뇌 게임">
+  <!-- pixel art baseball favicon (amber on dark) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'><rect width='16' height='16' fill='%230d1117'/><rect x='4' y='1' width='8' height='1' fill='%23fbbf24'/><rect x='2' y='2' width='12' height='1' fill='%23fbbf24'/><rect x='1' y='3' width='1' height='10' fill='%23fbbf24'/><rect x='14' y='3' width='1' height='10' fill='%23fbbf24'/><rect x='2' y='13' width='12' height='1' fill='%23fbbf24'/><rect x='4' y='14' width='8' height='1' fill='%23fbbf24'/><rect x='2' y='3' width='12' height='10' fill='%230d1117'/><rect x='4' y='3' width='2' height='1' fill='%23fbbf24'/><rect x='3' y='4' width='1' height='2' fill='%23fbbf24'/><rect x='4' y='6' width='1' height='1' fill='%23fbbf24'/><rect x='5' y='7' width='1' height='2' fill='%23fbbf24'/><rect x='4' y='9' width='1' height='1' fill='%23fbbf24'/><rect x='3' y='10' width='1' height='2' fill='%23fbbf24'/><rect x='4' y='12' width='2' height='1' fill='%23fbbf24'/><rect x='10' y='3' width='2' height='1' fill='%23fbbf24'/><rect x='12' y='4' width='1' height='2' fill='%23fbbf24'/><rect x='11' y='6' width='1' height='1' fill='%23fbbf24'/><rect x='10' y='7' width='1' height='2' fill='%23fbbf24'/><rect x='11' y='9' width='1' height='1' fill='%23fbbf24'/><rect x='12' y='10' width='1' height='2' fill='%23fbbf24'/><rect x='10' y='12' width='2' height='1' fill='%23fbbf24'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -709,6 +719,20 @@
 
     .qr-close:hover { background: var(--surface-3); }
 
+    /* ── LANG TOGGLE ── */
+    .lang-btn {
+      font-family: var(--px);
+      font-size: 7px;
+      padding: 3px 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-dim);
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: all .1s;
+    }
+    .lang-btn:hover { border-color: var(--amber); color: var(--amber); }
+
     /* ── FOOTER ── */
     footer {
       margin-top: 2rem;
@@ -753,16 +777,19 @@
     <div class="eyebrow-dot"></div>
   </div>
   <div class="header-title">NUMBER<br><em>BASEBALL</em></div>
-  <div class="header-sub">숫자야구</div>
+  <div class="header-sub" id="header-sub">숫자야구</div>
 </header>
 
 <div class="card">
   <div class="card-titlebar">
     <span class="card-titlebar-label">CONTROL PANEL</span>
-    <div class="traffic-lights">
-      <div class="tl tl-r"></div>
-      <div class="tl tl-y"></div>
-      <div class="tl tl-g"></div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="lang-btn" id="lang-btn" onclick="toggleLang()">EN</button>
+      <div class="traffic-lights">
+        <div class="tl tl-r"></div>
+        <div class="tl tl-y"></div>
+        <div class="tl tl-g"></div>
+      </div>
     </div>
   </div>
 
@@ -860,15 +887,14 @@
     <span class="bmc-icon">☕</span>
     <span class="bmc-title">BUY ME A COFFEE</span>
   </a>
-  <div class="bmc-sub">카카오페이로 커피 한 잔 사주세요!</div>
 </div>
 
 <!-- QR 모달 (데스크탑) -->
 <div id="qr-modal" class="qr-modal" style="display:none;" onclick="closeQr()">
   <div class="qr-box" onclick="event.stopPropagation()">
-    <div class="qr-box-title">☕ 카카오페이 송금</div>
+    <div class="qr-box-title" id="qr-box-title">☕ 카카오페이 송금</div>
     <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&color=000000&bgcolor=ffffff&data=https://qr.kakaopay.com/Ej7wPpW3m1f408605" alt="카카오페이 QR" width="180" height="180">
-    <div class="qr-box-sub">QR코드를 스캔해 주세요</div>
+    <div class="qr-box-sub" id="qr-box-sub">QR코드를 스캔해 주세요</div>
     <button class="qr-close" onclick="closeQr()">CLOSE</button>
   </div>
 </div>
@@ -885,6 +911,64 @@
   var current = [], hcurrent = [], eliminated = {};
   var ORDER = ['1','2','3','4','5','6','7','8','9','0'];
   var mode = 'game';
+  var lang = 'ko';
+
+  /* ── i18n ── */
+  var T = {
+    ko: {
+      headerSub:    '숫자야구',
+      gameDesc:     '숨겨진 수를 직접 맞춰요',
+      helperDesc:   '친구와 할 때 결과를 기록해요',
+      poolHint:     '아웃이 나온 숫자는 자동으로 제거돼요',
+      adLabel:      '광고',
+      qrTitle:      '☕ 카카오페이 송금',
+      qrSub:        'QR코드를 스캔해 주세요',
+      footerSub:    '숫자를 눌러 입력 · ENTER로 제출 · Backspace로 삭제',
+      msgFull:      function(n) { return '이미 ' + n + '자리를 입력했어요'; },
+      msgDup:       '이미 입력된 숫자예요',
+      msgNoZero:    '첫 번째 자리는 0이 될 수 없어요',
+      msgEnterAll:  function(n) { return n + '자리를 모두 입력해 주세요'; },
+      msgExceed:    function(n) { return '스트라이크 + 볼은 ' + n + '를 초과할 수 없어요'; },
+      winGame:      function(n) { return n + '번 만에 정답을 맞혔어요'; },
+      winHelper:    function(n) { return n + '번 만에 정답을 찾았어요'; },
+    },
+    en: {
+      headerSub:    'Number Baseball',
+      gameDesc:     'Guess the hidden number',
+      helperDesc:   'Track results with a friend',
+      poolHint:     'Numbers from OUT guesses are removed',
+      adLabel:      'Ad',
+      qrTitle:      '☕ KakaoPay Transfer',
+      qrSub:        'Scan the QR code to send',
+      footerSub:    'Click numbers · ENTER to submit · Backspace to delete',
+      msgFull:      function(n) { return 'Already ' + n + ' digits entered!'; },
+      msgDup:       'That number is already in!',
+      msgNoZero:    'First digit cannot be 0',
+      msgEnterAll:  function(n) { return 'Enter all ' + n + ' digits first'; },
+      msgExceed:    function(n) { return 'Strike + Ball cannot exceed ' + n; },
+      winGame:      function(n) { return 'Solved in ' + n + ' tries!'; },
+      winHelper:    function(n) { return 'Found in ' + n + ' tries!'; },
+    }
+  };
+
+  function toggleLang() {
+    lang = lang === 'ko' ? 'en' : 'ko';
+    document.documentElement.lang = lang;
+    applyLang();
+  }
+
+  function applyLang() {
+    var t = T[lang];
+    document.getElementById('lang-btn').textContent         = lang === 'ko' ? 'EN' : 'KO';
+    document.getElementById('header-sub').textContent       = t.headerSub;
+    document.querySelector('#mode-game .mtbtn-desc').textContent   = t.gameDesc;
+    document.querySelector('#mode-helper .mtbtn-desc').textContent = t.helperDesc;
+    document.querySelector('.pool-hint').textContent        = t.poolHint;
+    document.querySelector('.ad-slot-label').textContent    = t.adLabel;
+    document.getElementById('qr-box-title').textContent     = t.qrTitle;
+    document.getElementById('qr-box-sub').textContent       = t.qrSub;
+    document.querySelector('.footer-sub').textContent       = t.footerSub;
+  }
 
   /* ── HELPERS ── */
   function fmt(n)     { return String(n).padStart(3, '0'); }
@@ -948,6 +1032,7 @@
     if (sb) sb.disabled = false;
     document.documentElement.style.setProperty('--digits', digits);
     renderPool(); renderDisplay(); renderDisplayH();
+    applyLang();
   }
 
   /* ── RENDER ── */
@@ -1007,9 +1092,9 @@
   /* ── INPUT ── */
   function addDigit(d) {
     if (gameOver) return;
-    if (current.length >= digits) { setMsg('이미 ' + digits + '자리를 입력했어요'); return; }
-    for (var i = 0; i < current.length; i++) { if (current[i] === d) { setMsg('이미 입력된 숫자예요'); return; } }
-    if (current.length === 0 && d === '0') { setMsg('첫 번째 자리는 0이 될 수 없어요'); return; }
+    if (current.length >= digits) { setMsg(T[lang].msgFull(digits)); return; }
+    for (var i = 0; i < current.length; i++) { if (current[i] === d) { setMsg(T[lang].msgDup); return; } }
+    if (current.length === 0 && d === '0') { setMsg(T[lang].msgNoZero); return; }
     clearMsg();
     current.push(d);
     renderDisplay();
@@ -1019,9 +1104,9 @@
   }
 
   function addDigitH(d) {
-    if (hcurrent.length >= digits) { setMsg('이미 ' + digits + '자리를 입력했어요'); return; }
-    for (var i = 0; i < hcurrent.length; i++) { if (hcurrent[i] === d) { setMsg('이미 입력된 숫자예요'); return; } }
-    if (hcurrent.length === 0 && d === '0') { setMsg('첫 번째 자리는 0이 될 수 없어요'); return; }
+    if (hcurrent.length >= digits) { setMsg(T[lang].msgFull(digits)); return; }
+    for (var i = 0; i < hcurrent.length; i++) { if (hcurrent[i] === d) { setMsg(T[lang].msgDup); return; } }
+    if (hcurrent.length === 0 && d === '0') { setMsg(T[lang].msgNoZero); return; }
     clearMsg();
     hcurrent.push(d);
     renderDisplayH();
@@ -1035,7 +1120,7 @@
   /* ── SUBMIT ── */
   function submitGuess() {
     if (gameOver) return;
-    if (current.length !== digits) { setMsg(digits + '자리를 모두 입력해 주세요'); return; }
+    if (current.length !== digits) { setMsg(T[lang].msgEnterAll(digits)); return; }
     var guess = current.join('');
     clearMsg();
     tries++; document.getElementById('tries').textContent = fmt(tries);
@@ -1056,16 +1141,16 @@
       document.getElementById('subbtn').disabled = true;
       document.getElementById('winarea').innerHTML =
         '<div class="wmsg"><div class="wmsg-title">PERFECT!</div>' +
-        '<div class="wmsg-sub">' + tries + '번 만에 정답을 맞혔어요</div></div>';
+        '<div class="wmsg-sub">' + T[lang].winGame(tries) + '</div></div>';
     }
   }
 
   function submitHelper() {
-    if (hcurrent.length !== digits) { setMsg(digits + '자리를 모두 입력해 주세요'); return; }
+    if (hcurrent.length !== digits) { setMsg(T[lang].msgEnterAll(digits)); return; }
     var guess = hcurrent.join('');
     var s = parseInt(document.getElementById('sel-strike').value);
     var b = parseInt(document.getElementById('sel-ball').value);
-    if (s + b > digits) { setMsg('스트라이크 + 볼은 ' + digits + '를 초과할 수 없어요'); return; }
+    if (s + b > digits) { setMsg(T[lang].msgExceed(digits)); return; }
     clearMsg();
     tries++; document.getElementById('tries').textContent = fmt(tries);
 
@@ -1080,7 +1165,7 @@
     if (s === digits) {
       document.getElementById('winarea').innerHTML =
         '<div class="wmsg"><div class="wmsg-title">FOUND IT!</div>' +
-        '<div class="wmsg-sub">' + tries + '번 만에 정답을 찾았어요</div></div>';
+        '<div class="wmsg-sub">' + T[lang].winHelper(tries) + '</div></div>';
     }
   }
 
