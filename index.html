@@ -262,8 +262,12 @@
     .bs { background: var(--strike-bg); color: var(--strike); border: 1px solid rgba(96,165,250,.3); }
     .bb { background: var(--ball-bg);   color: var(--ball);   border: 1px solid rgba(52,211,153,.3); }
     .bo { background: var(--out-bg);    color: var(--out);    border: 1px solid rgba(248,113,113,.3); }
-    .hi-digit { display: inline-block; transition: all .1s; }
-    .hi-digit.x-elim { opacity: .25; text-decoration: line-through; }
+    .hi-digit-box { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border: 1px solid var(--border); font-family: var(--px); font-size: 11px; cursor: pointer; transition: all .12s; background: var(--surface-3); }
+    .hi-digit-box:hover { border-color: var(--out); }
+    .hi-digit-box.x-elim { border-color: var(--out); color: var(--text-dim); text-decoration: line-through; background: var(--out-bg); opacity: .5; }
+    .hi-num { display: flex; gap: 3px; }
+    .hi-del { margin-left: auto; font-family: var(--px); font-size: 7px; padding: 3px 7px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); cursor: pointer; letter-spacing: 1px; transition: all .1s; align-self: center; }
+    .hi-del:hover { border-color: var(--out); color: var(--out); }
 
     .ad-slot { width: 100%; max-width: 460px; margin-top: 1.25rem; }
 
@@ -497,7 +501,6 @@
   var mySecret = '', helperTab = 'my';
   var selStrike = 0, selBall = 0;
   var historyStack = [];
-  var manualElim = {};
   var scurrent = [], scursor = 0;
   var tcurrent = [], tcursor = 0;
   var ORDER = ['1','2','3','4','5','6','7','8','9','0'];
@@ -612,7 +615,7 @@
     tcurrent = new Array(digits).fill(null); tcursor = 0;
     mySecret = ''; helperTab = 'my';
     selStrike = 0; selBall = 0;
-    eliminated = {}; manualElim = {};
+    eliminated = {};
     historyStack = [];
     document.getElementById('tries').textContent = '000';
     document.getElementById('hbox').innerHTML = '';
@@ -643,13 +646,24 @@
   }
 
   /* ── RENDER POOL ── */
+  function isHistoryElim(d) {
+    for (var i = 0; i < historyStack.length; i++) {
+      var item = historyStack[i];
+      if (!item.digitElim) continue;
+      for (var j = 0; j < item.guess.length; j++) {
+        if (item.guess[j] === d && item.digitElim[j]) return true;
+      }
+    }
+    return false;
+  }
+
   function renderPool() {
     var c = document.getElementById('npool');
     c.innerHTML = '';
     for (var i = 0; i < ORDER.length; i++) {
       var d = ORDER[i];
       var el = document.createElement('div');
-      el.className = 'pd' + ((eliminated[d] || manualElim[d]) ? ' elim' : '');
+      el.className = 'pd' + ((eliminated[d] || isHistoryElim(d)) ? ' elim' : '');
       el.textContent = d;
       (function(digit) {
         el.addEventListener('click', function() {
@@ -896,11 +910,13 @@
     if (!last || last.isTheir) return;
     historyStack.pop();
     tries--; document.getElementById('tries').textContent = fmt(tries);
-    eliminated = Object.assign({}, last.eliminatedSnap);
     var hbox = document.getElementById('hbox-my');
     if (hbox.firstChild) hbox.removeChild(hbox.firstChild);
-    var hasHistory = hbox.children.length > 0;
-    document.getElementById('history-section').style.display = hasHistory ? '' : 'none';
+    if (hbox.firstChild) {
+      var nextDel = hbox.firstChild.querySelector('.hi-del');
+      if (nextDel) nextDel.style.display = '';
+    }
+    document.getElementById('history-section').style.display = hbox.children.length > 0 ? '' : 'none';
     renderPool(); clearMsg();
   }
 
@@ -910,8 +926,11 @@
     historyStack.pop();
     var hbox = document.getElementById('hbox-their');
     if (hbox.firstChild) hbox.removeChild(hbox.firstChild);
-    var hasHistory = hbox.children.length > 0;
-    document.getElementById('history-section').style.display = hasHistory ? '' : 'none';
+    if (hbox.firstChild) {
+      var nextDel = hbox.firstChild.querySelector('.hi-del');
+      if (nextDel) nextDel.style.display = '';
+    }
+    document.getElementById('history-section').style.display = hbox.children.length > 0 ? '' : 'none';
     document.getElementById('their-result').style.display = 'none';
     clearMsg();
   }
@@ -949,7 +968,6 @@
     clearMsg();
     tries++; document.getElementById('tries').textContent = fmt(tries);
     var isOut = (s === 0 && b === 0);
-    if (isOut) { for (var i = 0; i < digits; i++) eliminated[guess[i]] = true; }
     renderPool();
     addHistory(guess, s, b, isOut, false);
     hcurrent = new Array(digits).fill(null); hcursor = 0; renderDisplayH();
@@ -986,26 +1004,28 @@
 
   /* ── HISTORY ── */
   function addHistory(guess, s, b, isOut, isTheir) {
-    historyStack.push({ guess: guess, s: s, b: b, isOut: isOut, isTheir: isTheir, eliminatedSnap: Object.assign({}, eliminated) });
+    var digitElim = (isOut && mode === 'helper') ? new Array(guess.length).fill(true) : new Array(guess.length).fill(false);
+    historyStack.push({ guess: guess, s: s, b: b, isOut: isOut, isTheir: isTheir, digitElim: digitElim });
+    var stackIdx = historyStack.length - 1;
     var item = document.createElement('div');
     item.className = 'hi' + (isTheir ? ' their' : '');
+    item.dataset.histIdx = stackIdx;
     var left = document.createElement('div');
     left.style.display = 'flex'; left.style.flexDirection = 'column'; left.style.gap = '3px';
-    var num = document.createElement('span'); num.className = 'hi-num';
+    var num = document.createElement('div'); num.className = 'hi-num';
     for (var ci = 0; ci < guess.length; ci++) {
-      (function(ch) {
-        var span = document.createElement('span');
-        span.textContent = ch;
-        span.className = manualElim[ch] ? 'hi-digit x-elim' : 'hi-digit';
-        span.style.cursor = 'pointer';
-        span.addEventListener('click', function(e) {
+      (function(ch, pos) {
+        var box = document.createElement('div');
+        box.className = 'hi-digit-box' + (digitElim[pos] ? ' x-elim' : '');
+        box.textContent = ch;
+        box.addEventListener('click', function(e) {
           e.stopPropagation();
-          manualElim[ch] = !manualElim[ch];
-          span.className = manualElim[ch] ? 'hi-digit x-elim' : 'hi-digit';
+          historyStack[stackIdx].digitElim[pos] = !historyStack[stackIdx].digitElim[pos];
+          box.className = 'hi-digit-box' + (historyStack[stackIdx].digitElim[pos] ? ' x-elim' : '');
           renderPool();
         });
-        num.appendChild(span);
-      })(guess[ci]);
+        num.appendChild(box);
+      })(guess[ci], ci);
     }
     left.appendChild(num);
     if (isTheir !== undefined && mode === 'helper') {
@@ -1017,9 +1037,21 @@
     if (s > 0) { var bd = document.createElement('span'); bd.className = 'badge bs'; bd.textContent = s + 'S'; badges.appendChild(bd); }
     if (b > 0) { var bd = document.createElement('span'); bd.className = 'badge bb'; bd.textContent = b + 'B'; badges.appendChild(bd); }
     if (isOut) { var bd = document.createElement('span'); bd.className = 'badge bo'; bd.textContent = 'OUT';  badges.appendChild(bd); }
-    item.appendChild(left); item.appendChild(badges);
+    var delBtn = document.createElement('button');
+    delBtn.className = 'hi-del';
+    delBtn.textContent = '✕';
+    delBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (isTheir) undoTheirGuess(); else undoHelper();
+    });
+    item.appendChild(left); item.appendChild(badges); item.appendChild(delBtn);
     var hboxId = (mode === 'helper') ? (isTheir ? 'hbox-their' : 'hbox-my') : 'hbox';
     var hbox = document.getElementById(hboxId);
+    // 이전 첫 항목의 ✕ 버튼 숨김
+    if (hbox.firstChild) {
+      var prevDel = hbox.firstChild.querySelector('.hi-del');
+      if (prevDel) prevDel.style.display = 'none';
+    }
     document.getElementById('history-section').style.display = '';
     hbox.insertBefore(item, hbox.firstChild);
     setTimeout(function() { item.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 50);
