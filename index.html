@@ -20,7 +20,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@latest/dist/web/static/pretendard.css">
 
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
 
     :root {
       --bg:          #0d1117;
@@ -909,6 +909,7 @@
 <script>
   var secret = '', tries = 0, gameOver = false, digits = 4;
   var current = [], hcurrent = [], eliminated = {};
+  var cursor = 0, hcursor = 0;
   var ORDER = ['1','2','3','4','5','6','7','8','9','0'];
   var mode = 'game';
   var lang = 'ko';
@@ -1022,7 +1023,10 @@
   function startGame() {
     secret = genSecret();
     tries = 0; gameOver = false;
-    current = []; hcurrent = []; eliminated = {};
+    current = new Array(digits).fill(null);
+    hcurrent = new Array(digits).fill(null);
+    cursor = 0; hcursor = 0;
+    eliminated = {};
     document.getElementById('tries').textContent = '000';
     document.getElementById('hbox').innerHTML = '';
     document.getElementById('winarea').innerHTML = '';
@@ -1056,17 +1060,23 @@
   function renderDisplay() {
     var row = document.getElementById('drow');
     row.innerHTML = '';
-    var firstEmpty = -1;
     for (var i = 0; i < digits; i++) {
-      if (!current[i] && firstEmpty === -1) firstEmpty = i;
       var slot = document.createElement('div');
-      slot.className = 'dslot' + (current[i] ? ' filled' : '') + (!current[i] && i === firstEmpty ? ' cursor-slot' : '');
+      slot.className = 'dslot' + (current[i] ? ' filled' : '') + (!current[i] && i === cursor ? ' cursor-slot' : '');
       if (current[i]) {
         slot.textContent = current[i];
       } else {
         var h = document.createElement('span'); h.className = 'slothint'; h.textContent = i + 1; slot.appendChild(h);
       }
-      (function(idx) { slot.addEventListener('click', function() { removeAt(idx); }); })(i);
+      (function(idx) {
+        slot.addEventListener('click', function() {
+          if (gameOver) return;
+          if (current[idx]) { current[idx] = null; }
+          cursor = idx;
+          clearMsg();
+          renderDisplay();
+        });
+      })(i);
       row.appendChild(slot);
     }
   }
@@ -1074,17 +1084,22 @@
   function renderDisplayH() {
     var row = document.getElementById('hdrow');
     row.innerHTML = '';
-    var firstEmpty = -1;
     for (var i = 0; i < digits; i++) {
-      if (!hcurrent[i] && firstEmpty === -1) firstEmpty = i;
       var slot = document.createElement('div');
-      slot.className = 'dslot' + (hcurrent[i] ? ' filled' : '') + (!hcurrent[i] && i === firstEmpty ? ' cursor-slot' : '');
+      slot.className = 'dslot' + (hcurrent[i] ? ' filled' : '') + (!hcurrent[i] && i === hcursor ? ' cursor-slot' : '');
       if (hcurrent[i]) {
         slot.textContent = hcurrent[i];
       } else {
         var h = document.createElement('span'); h.className = 'slothint'; h.textContent = i + 1; slot.appendChild(h);
       }
-      (function(idx) { slot.addEventListener('click', function() { removeAtH(idx); }); })(i);
+      (function(idx) {
+        slot.addEventListener('click', function() {
+          if (hcurrent[idx]) { hcurrent[idx] = null; }
+          hcursor = idx;
+          clearMsg();
+          renderDisplayH();
+        });
+      })(i);
       row.appendChild(slot);
     }
   }
@@ -1092,35 +1107,65 @@
   /* ── INPUT ── */
   function addDigit(d) {
     if (gameOver) return;
-    if (current.length >= digits) { setMsg(T[lang].msgFull(digits)); return; }
-    for (var i = 0; i < current.length; i++) { if (current[i] === d) { setMsg(T[lang].msgDup); return; } }
-    if (current.length === 0 && d === '0') { setMsg(T[lang].msgNoZero); return; }
+    var count = 0; for (var i = 0; i < digits; i++) if (current[i]) count++;
+    if (count >= digits) { setMsg(T[lang].msgFull(digits)); return; }
+    for (var i = 0; i < digits; i++) { if (current[i] === d) { setMsg(T[lang].msgDup); return; } }
+    var target = (cursor < digits && !current[cursor]) ? cursor : -1;
+    if (target === -1) {
+      for (var i = 0; i < digits; i++) { if (!current[i]) { target = i; break; } }
+    }
+    if (target === -1) { setMsg(T[lang].msgFull(digits)); return; }
+    if (target === 0 && d === '0') { setMsg(T[lang].msgNoZero); return; }
     clearMsg();
-    current.push(d);
+    current[target] = d;
+    var next = -1;
+    for (var i = target + 1; i < digits; i++) { if (!current[i]) { next = i; break; } }
+    if (next === -1) for (var i = 0; i < target; i++) { if (!current[i]) { next = i; break; } }
+    cursor = next === -1 ? digits : next;
     renderDisplay();
     var slots = document.getElementById('drow').querySelectorAll('.dslot');
-    var s = slots[current.length - 1];
+    var s = slots[target];
     if (s) { s.classList.remove('pop'); void s.offsetWidth; s.classList.add('pop'); }
   }
 
   function addDigitH(d) {
-    if (hcurrent.length >= digits) { setMsg(T[lang].msgFull(digits)); return; }
-    for (var i = 0; i < hcurrent.length; i++) { if (hcurrent[i] === d) { setMsg(T[lang].msgDup); return; } }
-    if (hcurrent.length === 0 && d === '0') { setMsg(T[lang].msgNoZero); return; }
+    var count = 0; for (var i = 0; i < digits; i++) if (hcurrent[i]) count++;
+    if (count >= digits) { setMsg(T[lang].msgFull(digits)); return; }
+    for (var i = 0; i < digits; i++) { if (hcurrent[i] === d) { setMsg(T[lang].msgDup); return; } }
+    var target = (hcursor < digits && !hcurrent[hcursor]) ? hcursor : -1;
+    if (target === -1) {
+      for (var i = 0; i < digits; i++) { if (!hcurrent[i]) { target = i; break; } }
+    }
+    if (target === -1) { setMsg(T[lang].msgFull(digits)); return; }
+    if (target === 0 && d === '0') { setMsg(T[lang].msgNoZero); return; }
     clearMsg();
-    hcurrent.push(d);
+    hcurrent[target] = d;
+    var next = -1;
+    for (var i = target + 1; i < digits; i++) { if (!hcurrent[i]) { next = i; break; } }
+    if (next === -1) for (var i = 0; i < target; i++) { if (!hcurrent[i]) { next = i; break; } }
+    hcursor = next === -1 ? digits : next;
     renderDisplayH();
   }
 
-  function removeAt(idx)  { if (gameOver) return; if (idx < current.length)  { current.splice(idx, 1);  renderDisplay();  } }
-  function removeAtH(idx) { if (idx < hcurrent.length) { hcurrent.splice(idx, 1); renderDisplayH(); } }
-  function clearLast()    { if (gameOver) return; current.pop();  renderDisplay();  }
-  function clearLastH()   { hcurrent.pop(); renderDisplayH(); }
+  function clearLast() {
+    if (gameOver) return;
+    for (var i = digits - 1; i >= 0; i--) {
+      if (current[i]) { current[i] = null; cursor = i; break; }
+    }
+    renderDisplay();
+  }
+  function clearLastH() {
+    for (var i = digits - 1; i >= 0; i--) {
+      if (hcurrent[i]) { hcurrent[i] = null; hcursor = i; break; }
+    }
+    renderDisplayH();
+  }
 
   /* ── SUBMIT ── */
   function submitGuess() {
     if (gameOver) return;
-    if (current.length !== digits) { setMsg(T[lang].msgEnterAll(digits)); return; }
+    var count = 0; for (var i = 0; i < digits; i++) if (current[i]) count++;
+    if (count !== digits) { setMsg(T[lang].msgEnterAll(digits)); return; }
     var guess = current.join('');
     clearMsg();
     tries++; document.getElementById('tries').textContent = fmt(tries);
@@ -1146,7 +1191,8 @@
   }
 
   function submitHelper() {
-    if (hcurrent.length !== digits) { setMsg(T[lang].msgEnterAll(digits)); return; }
+    var count = 0; for (var i = 0; i < digits; i++) if (hcurrent[i]) count++;
+    if (count !== digits) { setMsg(T[lang].msgEnterAll(digits)); return; }
     var guess = hcurrent.join('');
     var s = parseInt(document.getElementById('sel-strike').value);
     var b = parseInt(document.getElementById('sel-ball').value);
