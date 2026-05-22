@@ -489,7 +489,7 @@
 </div>
 
 <footer>
-  <div class="footer-main">⚾ NUMBER BASEBALL · v1.0</div>
+  <div class="footer-main">⚾ NUMBER BASEBALL · v1.0.8</div>
   <div class="footer-sub" id="footer-sub">숫자를 눌러 입력 · ENTER로 제출 · Backspace로 삭제</div>
   <div class="footer-credit">made by heebong</div>
 </footer>
@@ -663,7 +663,7 @@
     for (var i = 0; i < ORDER.length; i++) {
       var d = ORDER[i];
       var el = document.createElement('div');
-      el.className = 'pd' + ((eliminated[d] || isHistoryElim(d)) ? ' elim' : '');
+      el.className = 'pd' + ((eliminated[d] || (helperTab !== 'their' && isHistoryElim(d))) ? ' elim' : '');
       el.textContent = d;
       (function(digit) {
         el.addEventListener('click', function() {
@@ -876,6 +876,7 @@
     hboxTheir.style.display = tab === 'their' ? '' : 'none';
     var hasHistory = (tab === 'my' ? hboxMy : hboxTheir).children.length > 0;
     document.getElementById('history-section').style.display = hasHistory ? '' : 'none';
+    renderPool();
     clearMsg();
   }
 
