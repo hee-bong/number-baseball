@@ -968,8 +968,8 @@
     clearMsg();
     tries++; document.getElementById('tries').textContent = fmt(tries);
     var isOut = (s === 0 && b === 0);
-    renderPool();
     addHistory(guess, s, b, isOut, false);
+    renderPool();
     hcurrent = new Array(digits).fill(null); hcursor = 0; renderDisplayH();
     selStrike = 0; selBall = 0; renderResultBtns();
     if (s === digits) {
@@ -999,6 +999,7 @@
     resultEl.innerHTML = html;
     resultEl.style.display = '';
     addHistory(guess, s, b, isOut, true);
+    renderPool();
     tcurrent = new Array(digits).fill(null); tcursor = 0; renderDisplayT();
   }
 
