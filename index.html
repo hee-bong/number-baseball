@@ -649,7 +649,7 @@
   function isHistoryElim(d) {
     for (var i = 0; i < historyStack.length; i++) {
       var item = historyStack[i];
-      if (!item.digitElim) continue;
+      if (!item.digitElim || item.isTheir) continue;
       for (var j = 0; j < item.guess.length; j++) {
         if (item.guess[j] === d && item.digitElim[j]) return true;
       }
@@ -1005,7 +1005,7 @@
 
   /* ── HISTORY ── */
   function addHistory(guess, s, b, isOut, isTheir) {
-    var digitElim = (isOut && mode === 'helper') ? new Array(guess.length).fill(true) : new Array(guess.length).fill(false);
+    var digitElim = (isOut && mode === 'helper' && !isTheir) ? new Array(guess.length).fill(true) : new Array(guess.length).fill(false);
     historyStack.push({ guess: guess, s: s, b: b, isOut: isOut, isTheir: isTheir, digitElim: digitElim });
     var stackIdx = historyStack.length - 1;
     var item = document.createElement('div');
@@ -1019,12 +1019,14 @@
         var box = document.createElement('div');
         box.className = 'hi-digit-box' + (digitElim[pos] ? ' x-elim' : '');
         box.textContent = ch;
-        box.addEventListener('click', function(e) {
-          e.stopPropagation();
-          historyStack[stackIdx].digitElim[pos] = !historyStack[stackIdx].digitElim[pos];
-          box.className = 'hi-digit-box' + (historyStack[stackIdx].digitElim[pos] ? ' x-elim' : '');
-          renderPool();
-        });
+        if (!isTheir) {
+          box.addEventListener('click', function(e) {
+            e.stopPropagation();
+            historyStack[stackIdx].digitElim[pos] = !historyStack[stackIdx].digitElim[pos];
+            box.className = 'hi-digit-box' + (historyStack[stackIdx].digitElim[pos] ? ' x-elim' : '');
+            renderPool();
+          });
+        }
         num.appendChild(box);
       })(guess[ci], ci);
     }
