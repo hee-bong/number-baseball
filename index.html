@@ -262,6 +262,8 @@
     .bs { background: var(--strike-bg); color: var(--strike); border: 1px solid rgba(96,165,250,.3); }
     .bb { background: var(--ball-bg);   color: var(--ball);   border: 1px solid rgba(52,211,153,.3); }
     .bo { background: var(--out-bg);    color: var(--out);    border: 1px solid rgba(248,113,113,.3); }
+    .hi-digit { display: inline-block; transition: all .1s; }
+    .hi-digit.x-elim { opacity: .25; text-decoration: line-through; }
 
     .ad-slot { width: 100%; max-width: 460px; margin-top: 1.25rem; }
 
@@ -370,91 +372,80 @@
       <span class="score-digits-badge" id="digits-badge">4-DIGIT</span>
     </div>
 
+    <!-- ── SLOT AREA ── -->
+    <div id="game-slot">
+      <div class="drow" id="drow"></div>
+    </div>
+
+    <div id="helper-setup-slot" style="display:none;">
+      <div class="secret-setup-header">
+        <div class="secret-step-badge">STEP 1 / 2</div>
+        <div class="secret-setup-title" id="label-set-secret">내 비밀 숫자를 정해주세요</div>
+        <div class="secret-setup-desc" id="desc-set-secret">상대방이 맞춰야 할 숫자예요</div>
+      </div>
+      <div class="drow secret-drow" id="sdrow"></div>
+    </div>
+
+    <div id="helper-main-slot" style="display:none;">
+      <div class="my-secret-bar">
+        <span class="my-secret-lbl" id="label-my-secret-bar">MY SECRET</span>
+        <span class="my-secret-dots" id="my-secret-dots"></span>
+        <button class="mini-btn" onclick="resetMySecret()" id="btn-change">CHANGE</button>
+      </div>
+      <div class="helper-tab-toggle">
+        <button class="htbtn active" id="tab-my" onclick="setHelperTab('my')">
+          MY TURN<span class="htbtn-desc" id="desc-my-turn">내가 추측할 때</span>
+        </button>
+        <button class="htbtn" id="tab-their" onclick="setHelperTab('their')">
+          THEIR TURN<span class="htbtn-desc" id="desc-their-turn">상대가 추측할 때</span>
+        </button>
+      </div>
+      <div id="helper-my-slot"><div class="drow" id="hdrow"></div></div>
+      <div id="helper-their-slot" style="display:none;"><div class="drow" id="tdrow"></div></div>
+    </div>
+
+    <!-- ── NUMBER POOL (슬롯 바로 아래) ── -->
     <div class="section-label" id="label-pick">PICK A NUMBER</div>
     <div class="npool" id="npool"></div>
     <div class="pool-hint" id="pool-hint">아웃이 나온 숫자는 자동으로 제거돼요</div>
 
-    <!-- 게임 모드 -->
-    <div id="game-input-area">
-      <div class="drow" id="drow"></div>
+    <!-- ── CONTROLS AREA ── -->
+    <div id="game-controls">
       <div class="btnrow">
-        <button class="abtn"         onclick="clearLast()">⌫ DEL</button>
+        <button class="abtn" onclick="clearLast()">⌫ DEL</button>
         <button class="abtn primary" id="subbtn" onclick="submitGuess()">ENTER ↵</button>
-        <button class="abtn"         onclick="startGame()">NEW GAME</button>
+        <button class="abtn" onclick="startGame()">NEW GAME</button>
       </div>
     </div>
 
-    <!-- 헬퍼 모드 -->
-    <div id="helper-input-area" style="display:none;">
-
-      <!-- 1단계: 내 비밀 숫자 설정 -->
-      <div id="my-secret-setup">
-        <div class="secret-setup-header">
-          <div class="secret-step-badge">STEP 1 / 2</div>
-          <div class="secret-setup-title" id="label-set-secret">내 비밀 숫자를 정해주세요</div>
-          <div class="secret-setup-desc" id="desc-set-secret">상대방이 맞춰야 할 숫자예요</div>
-        </div>
-        <div class="drow secret-drow" id="sdrow"></div>
-        <div class="btnrow">
-          <button class="abtn" onclick="clearLastS()">⌫ DEL</button>
-          <button class="abtn primary" onclick="setMySecret()" id="btn-start-game">START GAME ↵</button>
-        </div>
-        <div class="smsg" id="smsg-setup"></div>
+    <div id="helper-setup-controls" style="display:none;">
+      <div class="smsg" id="smsg-setup"></div>
+      <div class="btnrow">
+        <button class="abtn" onclick="clearLastS()">⌫ DEL</button>
+        <button class="abtn primary" onclick="setMySecret()" id="btn-start-game">START GAME ↵</button>
       </div>
+    </div>
 
-      <!-- 2단계: 탭 (비밀번호 설정 후) -->
-      <div id="helper-main" style="display:none;">
+    <div id="helper-my-controls" style="display:none;">
+      <div class="result-select-group">
+        <div class="result-select-row"><span class="rlabel">S</span><div class="result-btns" id="strike-btns"></div></div>
+        <div class="result-select-row"><span class="rlabel">B</span><div class="result-btns" id="ball-btns"></div></div>
+      </div>
+      <div class="btnrow">
+        <button class="abtn" onclick="clearLastH()">⌫ DEL</button>
+        <button class="abtn primary" onclick="submitHelper()">LOG ↵</button>
+        <button class="abtn" onclick="undoHelper()">UNDO</button>
+        <button class="abtn" onclick="startGame()">RESET</button>
+      </div>
+    </div>
 
-        <!-- 내 비밀 숫자 표시 바 -->
-        <div class="my-secret-bar">
-          <span class="my-secret-lbl" id="label-my-secret-bar">MY SECRET</span>
-          <span class="my-secret-dots" id="my-secret-dots"></span>
-          <button class="mini-btn" onclick="resetMySecret()" id="btn-change">CHANGE</button>
-        </div>
-
-        <!-- MY TURN / THEIR TURN 탭 -->
-        <div class="helper-tab-toggle">
-          <button class="htbtn active" id="tab-my" onclick="setHelperTab('my')">
-            MY TURN
-            <span class="htbtn-desc" id="desc-my-turn">내가 추측할 때</span>
-          </button>
-          <button class="htbtn" id="tab-their" onclick="setHelperTab('their')">
-            THEIR TURN
-            <span class="htbtn-desc" id="desc-their-turn">상대가 추측할 때</span>
-          </button>
-        </div>
-
-        <!-- MY TURN: 내가 추측, 결과 수동 입력 -->
-        <div id="helper-my-area">
-          <div class="drow" id="hdrow"></div>
-          <div class="result-select-group">
-            <div class="result-select-row">
-              <span class="rlabel">S</span>
-              <div class="result-btns" id="strike-btns"></div>
-            </div>
-            <div class="result-select-row">
-              <span class="rlabel">B</span>
-              <div class="result-btns" id="ball-btns"></div>
-            </div>
-          </div>
-          <div class="btnrow">
-            <button class="abtn" onclick="clearLastH()">⌫ DEL</button>
-            <button class="abtn primary" onclick="submitHelper()">LOG ↵</button>
-            <button class="abtn" onclick="startGame()">RESET</button>
-          </div>
-        </div>
-
-        <!-- THEIR TURN: 상대 추측 입력, 자동 S/B 계산 -->
-        <div id="helper-their-area" style="display:none;">
-          <div class="drow" id="tdrow"></div>
-          <div id="their-result" style="display:none;"></div>
-          <div class="btnrow">
-            <button class="abtn" onclick="clearLastT()">⌫ DEL</button>
-            <button class="abtn primary" onclick="submitTheirGuess()">CHECK ↵</button>
-            <button class="abtn" onclick="startGame()">RESET</button>
-          </div>
-        </div>
-
+    <div id="helper-their-controls" style="display:none;">
+      <div id="their-result" style="display:none;"></div>
+      <div class="btnrow">
+        <button class="abtn" onclick="clearLastT()">⌫ DEL</button>
+        <button class="abtn primary" onclick="submitTheirGuess()">CHECK ↵</button>
+        <button class="abtn" onclick="undoTheirGuess()">UNDO</button>
+        <button class="abtn" onclick="startGame()">RESET</button>
       </div>
     </div>
 
@@ -505,6 +496,8 @@
   var cursor = 0, hcursor = 0;
   var mySecret = '', helperTab = 'my';
   var selStrike = 0, selBall = 0;
+  var historyStack = [];
+  var manualElim = {};
   var scurrent = [], scursor = 0;
   var tcurrent = [], tcursor = 0;
   var ORDER = ['1','2','3','4','5','6','7','8','9','0'];
@@ -592,8 +585,6 @@
     mode = m;
     document.getElementById('mode-game').className   = 'mtbtn' + (m === 'game'   ? ' active' : '');
     document.getElementById('mode-helper').className = 'mtbtn' + (m === 'helper' ? ' active' : '');
-    document.getElementById('game-input-area').style.display   = m === 'game'   ? '' : 'none';
-    document.getElementById('helper-input-area').style.display = m === 'helper' ? '' : 'none';
     startGame();
   }
 
@@ -621,7 +612,8 @@
     tcurrent = new Array(digits).fill(null); tcursor = 0;
     mySecret = ''; helperTab = 'my';
     selStrike = 0; selBall = 0;
-    eliminated = {};
+    eliminated = {}; manualElim = {};
+    historyStack = [];
     document.getElementById('tries').textContent = '000';
     document.getElementById('hbox').innerHTML = '';
     document.getElementById('hbox-my').innerHTML = '';
@@ -632,12 +624,18 @@
     var sb = document.getElementById('subbtn');
     if (sb) sb.disabled = false;
     document.documentElement.style.setProperty('--digits', digits);
-    if (mode === 'helper') {
-      document.getElementById('my-secret-setup').style.display = '';
-      document.getElementById('helper-main').style.display = 'none';
+    var isGame   = mode === 'game';
+    var isHelper = mode === 'helper';
+    document.getElementById('game-slot').style.display             = isGame   ? '' : 'none';
+    document.getElementById('game-controls').style.display         = isGame   ? '' : 'none';
+    document.getElementById('helper-setup-slot').style.display     = isHelper ? '' : 'none';
+    document.getElementById('helper-setup-controls').style.display = isHelper ? '' : 'none';
+    document.getElementById('helper-main-slot').style.display      = 'none';
+    document.getElementById('helper-my-controls').style.display    = 'none';
+    document.getElementById('helper-their-controls').style.display = 'none';
+    if (isHelper) {
       document.getElementById('smsg-setup').textContent = '';
-      var tr = document.getElementById('their-result');
-      if (tr) tr.style.display = 'none';
+      document.getElementById('their-result').style.display = 'none';
       renderDisplayS();
     }
     renderPool(); renderDisplay(); renderDisplayH(); renderDisplayT(); renderResultBtns();
@@ -651,7 +649,7 @@
     for (var i = 0; i < ORDER.length; i++) {
       var d = ORDER[i];
       var el = document.createElement('div');
-      el.className = 'pd' + (eliminated[d] ? ' elim' : '');
+      el.className = 'pd' + ((eliminated[d] || manualElim[d]) ? ' elim' : '');
       el.textContent = d;
       (function(digit) {
         el.addEventListener('click', function() {
@@ -831,8 +829,9 @@
     var count = 0; for (var i = 0; i < digits; i++) if (scurrent[i]) count++;
     if (count !== digits) { document.getElementById('smsg-setup').textContent = T[lang].msgEnterAll(digits); return; }
     mySecret = scurrent.join('');
-    document.getElementById('my-secret-setup').style.display = 'none';
-    document.getElementById('helper-main').style.display = '';
+    document.getElementById('helper-setup-slot').style.display     = 'none';
+    document.getElementById('helper-setup-controls').style.display = 'none';
+    document.getElementById('helper-main-slot').style.display      = '';
     document.getElementById('my-secret-dots').textContent = mySecret;
     setHelperTab('my');
   }
@@ -840,8 +839,11 @@
   function resetMySecret() {
     mySecret = '';
     scurrent = new Array(digits).fill(null); scursor = 0;
-    document.getElementById('my-secret-setup').style.display = '';
-    document.getElementById('helper-main').style.display = 'none';
+    document.getElementById('helper-setup-slot').style.display     = '';
+    document.getElementById('helper-setup-controls').style.display = '';
+    document.getElementById('helper-main-slot').style.display      = 'none';
+    document.getElementById('helper-my-controls').style.display    = 'none';
+    document.getElementById('helper-their-controls').style.display = 'none';
     document.getElementById('smsg-setup').textContent = '';
     renderDisplayS();
   }
@@ -850,8 +852,10 @@
     helperTab = tab;
     document.getElementById('tab-my').className    = 'htbtn' + (tab === 'my'    ? ' active' : '');
     document.getElementById('tab-their').className = 'htbtn' + (tab === 'their' ? ' active' : '');
-    document.getElementById('helper-my-area').style.display    = tab === 'my'    ? '' : 'none';
-    document.getElementById('helper-their-area').style.display = tab === 'their' ? '' : 'none';
+    document.getElementById('helper-my-slot').style.display       = tab === 'my'    ? '' : 'none';
+    document.getElementById('helper-their-slot').style.display    = tab === 'their' ? '' : 'none';
+    document.getElementById('helper-my-controls').style.display   = tab === 'my'    ? '' : 'none';
+    document.getElementById('helper-their-controls').style.display= tab === 'their' ? '' : 'none';
     var hboxMy    = document.getElementById('hbox-my');
     var hboxTheir = document.getElementById('hbox-their');
     hboxMy.style.display    = tab === 'my'    ? '' : 'none';
@@ -884,6 +888,32 @@
       document.getElementById('subbtn').disabled = true;
       document.getElementById('winarea').innerHTML = '<div class="wmsg"><div class="wmsg-title">PERFECT!</div><div class="wmsg-sub">' + T[lang].winGame(tries) + '</div></div>';
     }
+  }
+
+  /* ── UNDO ── */
+  function undoHelper() {
+    var last = historyStack[historyStack.length - 1];
+    if (!last || last.isTheir) return;
+    historyStack.pop();
+    tries--; document.getElementById('tries').textContent = fmt(tries);
+    eliminated = Object.assign({}, last.eliminatedSnap);
+    var hbox = document.getElementById('hbox-my');
+    if (hbox.firstChild) hbox.removeChild(hbox.firstChild);
+    var hasHistory = hbox.children.length > 0;
+    document.getElementById('history-section').style.display = hasHistory ? '' : 'none';
+    renderPool(); clearMsg();
+  }
+
+  function undoTheirGuess() {
+    var last = historyStack[historyStack.length - 1];
+    if (!last || !last.isTheir) return;
+    historyStack.pop();
+    var hbox = document.getElementById('hbox-their');
+    if (hbox.firstChild) hbox.removeChild(hbox.firstChild);
+    var hasHistory = hbox.children.length > 0;
+    document.getElementById('history-section').style.display = hasHistory ? '' : 'none';
+    document.getElementById('their-result').style.display = 'none';
+    clearMsg();
   }
 
   /* ── RESULT BUTTONS ── */
@@ -956,11 +986,27 @@
 
   /* ── HISTORY ── */
   function addHistory(guess, s, b, isOut, isTheir) {
+    historyStack.push({ guess: guess, s: s, b: b, isOut: isOut, isTheir: isTheir, eliminatedSnap: Object.assign({}, eliminated) });
     var item = document.createElement('div');
     item.className = 'hi' + (isTheir ? ' their' : '');
     var left = document.createElement('div');
     left.style.display = 'flex'; left.style.flexDirection = 'column'; left.style.gap = '3px';
-    var num = document.createElement('span'); num.className = 'hi-num'; num.textContent = guess;
+    var num = document.createElement('span'); num.className = 'hi-num';
+    for (var ci = 0; ci < guess.length; ci++) {
+      (function(ch) {
+        var span = document.createElement('span');
+        span.textContent = ch;
+        span.className = manualElim[ch] ? 'hi-digit x-elim' : 'hi-digit';
+        span.style.cursor = 'pointer';
+        span.addEventListener('click', function(e) {
+          e.stopPropagation();
+          manualElim[ch] = !manualElim[ch];
+          span.className = manualElim[ch] ? 'hi-digit x-elim' : 'hi-digit';
+          renderPool();
+        });
+        num.appendChild(span);
+      })(guess[ci]);
+    }
     left.appendChild(num);
     if (isTheir !== undefined && mode === 'helper') {
       var who = document.createElement('span'); who.className = 'hi-who';
