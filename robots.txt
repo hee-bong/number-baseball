@@ -1,2 +1,4 @@
 User-agent: *
-Disallow: /
+Allow: /
+
+Sitemap: https://catchnumberbaseball.netlify.app/sitemap.xml

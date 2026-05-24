@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap');
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#0a0e1a"/>
+
+  <!-- CRT scanlines overlay -->
+  <rect width="1200" height="630" fill="url(#scan)" opacity="0.08"/>
+  <defs>
+    <pattern id="scan" width="1" height="4" patternUnits="userSpaceOnUse">
+      <rect width="1" height="2" fill="#000"/>
+    </pattern>
+    <!-- Amber glow filter -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-strong">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Corner brackets - top left -->
+  <rect x="60" y="60" width="60" height="8" fill="#ffb347" opacity="0.7"/>
+  <rect x="60" y="60" width="8" height="60" fill="#ffb347" opacity="0.7"/>
+  <!-- top right -->
+  <rect x="1080" y="60" width="60" height="8" fill="#ffb347" opacity="0.7"/>
+  <rect x="1132" y="60" width="8" height="60" fill="#ffb347" opacity="0.7"/>
+  <!-- bottom left -->
+  <rect x="60" y="562" width="60" height="8" fill="#ffb347" opacity="0.7"/>
+  <rect x="60" y="510" width="8" height="60" fill="#ffb347" opacity="0.7"/>
+  <!-- bottom right -->
+  <rect x="1080" y="562" width="60" height="8" fill="#ffb347" opacity="0.7"/>
+  <rect x="1132" y="510" width="8" height="60" fill="#ffb347" opacity="0.7"/>
+
+  <!-- ⚾ emoji-style baseball (pixel art) -->
+  <!-- Ball circle -->
+  <circle cx="170" cy="180" r="54" fill="#f5f0e8" filter="url(#glow)"/>
+  <!-- Seam lines -->
+  <path d="M130 155 Q155 175 130 200" stroke="#cc3333" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M210 155 Q185 175 210 200" stroke="#cc3333" stroke-width="4" fill="none" stroke-linecap="round"/>
+
+  <!-- NUMBER BASEBALL title -->
+  <text x="600" y="200" font-family="'Press Start 2P', monospace" font-size="62" fill="#ffb347"
+        text-anchor="middle" filter="url(#glow-strong)" letter-spacing="2">NUMBER</text>
+  <text x="600" y="285" font-family="'Press Start 2P', monospace" font-size="62" fill="#ffb347"
+        text-anchor="middle" filter="url(#glow-strong)" letter-spacing="2">BASEBALL</text>
+
+  <!-- Divider line -->
+  <rect x="140" y="320" width="920" height="3" fill="#ffb347" opacity="0.4"/>
+
+  <!-- Digit slots -->
+  <!-- Slot 1 -->
+  <rect x="310" y="360" width="110" height="130" rx="8" fill="none" stroke="#39ff14" stroke-width="3" opacity="0.9"/>
+  <text x="365" y="453" font-family="'Press Start 2P', monospace" font-size="56" fill="#39ff14"
+        text-anchor="middle" filter="url(#glow)">1</text>
+  <!-- Slot 2 -->
+  <rect x="440" y="360" width="110" height="130" rx="8" fill="none" stroke="#39ff14" stroke-width="3" opacity="0.9"/>
+  <text x="495" y="453" font-family="'Press Start 2P', monospace" font-size="56" fill="#39ff14"
+        text-anchor="middle" filter="url(#glow)">2</text>
+  <!-- Slot 3 -->
+  <rect x="570" y="360" width="110" height="130" rx="8" fill="none" stroke="#39ff14" stroke-width="3" opacity="0.9"/>
+  <text x="625" y="453" font-family="'Press Start 2P', monospace" font-size="56" fill="#39ff14"
+        text-anchor="middle" filter="url(#glow)">?</text>
+  <!-- Slot 4 -->
+  <rect x="700" y="360" width="110" height="130" rx="8" fill="none" stroke="#39ff14" stroke-width="3" opacity="0.9"/>
+  <text x="755" y="453" font-family="'Press Start 2P', monospace" font-size="56" fill="#39ff14"
+        text-anchor="middle" filter="url(#glow)">?</text>
+
+  <!-- Result badges -->
+  <rect x="840" y="390" width="90" height="38" rx="6" fill="none" stroke="#ffb347" stroke-width="2"/>
+  <text x="885" y="415" font-family="'Press Start 2P', monospace" font-size="16" fill="#ffb347"
+        text-anchor="middle">2S</text>
+  <rect x="940" y="390" width="90" height="38" rx="6" fill="none" stroke="#4fc3f7" stroke-width="2"/>
+  <text x="985" y="415" font-family="'Press Start 2P', monospace" font-size="16" fill="#4fc3f7"
+        text-anchor="middle">1B</text>
+
+  <!-- Subtitle / tagline -->
+  <text x="600" y="555" font-family="'Press Start 2P', monospace" font-size="18" fill="#5a6a8a"
+        text-anchor="middle" letter-spacing="3">GUESS THE SECRET NUMBER</text>
+</svg>
