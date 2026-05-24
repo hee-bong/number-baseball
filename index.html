@@ -24,6 +24,9 @@
   <meta name="twitter:title" content="숫자야구 — Number Baseball">
   <meta name="twitter:description" content="숨겨진 숫자를 맞추는 클래식 두뇌 게임">
   <meta name="twitter:image" content="https://catchnumberbaseball.netlify.app/og-image.svg">
+  <meta name="naver-site-verification" content="9b6919586c0268b9dd9aa64a09a93a71988090a6" />
+  <meta name="theme-color" content="#0d1117">
+  <link rel="manifest" href="/manifest.json">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'><rect width='16' height='16' fill='%230d1117'/><rect x='4' y='1' width='8' height='1' fill='%23fbbf24'/><rect x='2' y='2' width='12' height='1' fill='%23fbbf24'/><rect x='1' y='3' width='1' height='10' fill='%23fbbf24'/><rect x='14' y='3' width='1' height='10' fill='%23fbbf24'/><rect x='2' y='13' width='12' height='1' fill='%23fbbf24'/><rect x='4' y='14' width='8' height='1' fill='%23fbbf24'/><rect x='2' y='3' width='12' height='10' fill='%230d1117'/><rect x='4' y='3' width='2' height='1' fill='%23fbbf24'/><rect x='3' y='4' width='1' height='2' fill='%23fbbf24'/><rect x='4' y='6' width='1' height='1' fill='%23fbbf24'/><rect x='5' y='7' width='1' height='2' fill='%23fbbf24'/><rect x='4' y='9' width='1' height='1' fill='%23fbbf24'/><rect x='3' y='10' width='1' height='2' fill='%23fbbf24'/><rect x='4' y='12' width='2' height='1' fill='%23fbbf24'/><rect x='10' y='3' width='2' height='1' fill='%23fbbf24'/><rect x='12' y='4' width='1' height='2' fill='%23fbbf24'/><rect x='11' y='6' width='1' height='1' fill='%23fbbf24'/><rect x='10' y='7' width='1' height='2' fill='%23fbbf24'/><rect x='11' y='9' width='1' height='1' fill='%23fbbf24'/><rect x='12' y='10' width='1' height='2' fill='%23fbbf24'/><rect x='10' y='12' width='2' height='1' fill='%23fbbf24'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -322,6 +325,8 @@
 
     .footer-sub { font-family: var(--kr); font-size: 12px; color: var(--text-dim); line-height: 1.8; }
     .footer-credit { font-family: var(--px); font-size: 7px; color: var(--text-dim); letter-spacing: 2px; margin-top: 8px; }
+    .kakao-share-btn { display: inline-flex; align-items: center; gap: 7px; margin: 12px auto 4px; background: #FFE812; color: #3C1E1E; border: none; border-radius: 8px; padding: 9px 18px; font-family: var(--kr); font-size: 13px; font-weight: 700; cursor: pointer; letter-spacing: 0; }
+    .kakao-share-btn:active { opacity: .8; }
 
     @media (max-width: 420px) {
       body { padding: 1.5rem .75rem 4rem; }
@@ -505,8 +510,12 @@
 </div>
 
 <footer>
-  <div class="footer-main">⚾ NUMBER BASEBALL · v1.0.12</div>
+  <div class="footer-main">⚾ NUMBER BASEBALL · v1.0.13</div>
   <div class="footer-sub" id="footer-sub">숫자를 눌러 입력 · ENTER로 제출 · Backspace로 삭제</div>
+  <button class="kakao-share-btn" id="kakao-share-btn" onclick="shareKakao()">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><ellipse cx="9" cy="8.5" rx="8" ry="7" fill="#3C1E1E"/><path d="M9 3C5.686 3 3 5.09 3 7.667c0 1.614 1.02 3.03 2.56 3.847L4.9 13.5l2.74-1.82c.44.07.9.11 1.36.11 3.314 0 6-2.09 6-4.667S12.314 3 9 3z" fill="#FFE812"/></svg>
+    카카오톡 공유
+  </button>
   <div class="footer-credit">made by heebong</div>
 </footer>
 
@@ -1121,7 +1130,37 @@
     var wrap = document.getElementById('ad-slot-wrap');
     if (wrap) wrap.style.display = 'none';
   }
+
+  var KAKAO_APP_KEY = '';  /* ← developers.kakao.com JavaScript 앱키 여기에 */
+
+  function shareKakao() {
+    if (!KAKAO_APP_KEY) { alert('카카오 앱키를 설정해 주세요.'); return; }
+    if (!window.Kakao) { alert('카카오 SDK가 로드되지 않았습니다.'); return; }
+    if (!Kakao.isInitialized()) Kakao.init(KAKAO_APP_KEY);
+    Kakao.Share.sendDefault({
+      objectType: 'feed',
+      content: {
+        title: '숫자야구 — Number Baseball',
+        description: '숨겨진 숫자를 스트라이크·볼 힌트로 맞추는 두뇌 게임! 같이 해봐요 ⚾',
+        imageUrl: 'https://catchnumberbaseball.netlify.app/og-image.svg',
+        link: {
+          mobileWebUrl: 'https://catchnumberbaseball.netlify.app',
+          webUrl: 'https://catchnumberbaseball.netlify.app'
+        }
+      },
+      buttons: [{
+        title: '게임 하러 가기',
+        link: {
+          mobileWebUrl: 'https://catchnumberbaseball.netlify.app',
+          webUrl: 'https://catchnumberbaseball.netlify.app'
+        }
+      }]
+    });
+  }
 </script>
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
+  integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"
+  crossorigin="anonymous"></script>
 <script type="text/javascript" src="//t1.kakaocdn.net/kas/static/ba.min.js" async></script>
 </body>
 </html>
