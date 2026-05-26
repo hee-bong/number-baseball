@@ -872,6 +872,14 @@
     });
   }
 
+  function syncAllRoomHistoryElim() {
+    var el = document.getElementById('hbox-room');
+    if (!el) return;
+    el.querySelectorAll('.hi-digit-box').forEach(function(b) {
+      b.classList.toggle('x-elim', isRoomHistoryElim(b.textContent));
+    });
+  }
+
   function renderPool() {
     var c = document.getElementById('npool');
     c.innerHTML = '';
@@ -1623,7 +1631,7 @@ function updateRoomUI(d) {
         box.addEventListener('click', function() {
           s.elim[idx] = !s.elim[idx];
           renderPool();
-          if (lastRoomData) updateRoomUI(lastRoomData);
+          syncAllRoomHistoryElim();
         });
       })(ci, state);
       num.appendChild(box);
@@ -1660,6 +1668,7 @@ function updateRoomUI(d) {
       hboxOpp.appendChild(oitem);
     }
   }
+  renderPool();
 }
 
 /* ── SECRET INPUT ── */
