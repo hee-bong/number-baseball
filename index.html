@@ -492,6 +492,7 @@
           <button class="rkkey" onclick="addRoomCodeChar('Z')">Z</button>
           <button class="rkkey del" style="grid-column:span 2" onclick="delRoomCodeChar()">⌫ DEL</button>
           <button class="rkkey join" style="grid-column:span 2" onclick="joinRoom()">참가 ↵</button>
+          <button class="rkkey" style="grid-column:span 10;font-family:var(--kr);font-size:12px;font-weight:700;letter-spacing:0;padding:9px;" onclick="pasteRoomCode()">코드 붙여넣기</button>
         </div>
       </div>
     </div>
@@ -499,6 +500,7 @@
     <div id="room-waiting-slot" style="display:none;">
       <div class="room-status-msg">친구에게 아래 코드를 알려주세요</div>
       <div class="room-code-display" id="room-code-show"></div>
+      <button class="abtn" style="width:100%;font-family:var(--kr);font-size:13px;font-weight:700;letter-spacing:0;margin-bottom:.5rem;" onclick="copyRoomCode()">코드 복사하기</button>
       <div class="room-opponent-waiting" id="room-wait-anim">WAITING FOR OPPONENT...</div>
     </div>
 
@@ -1380,6 +1382,26 @@ function setRoomMsg(m) { var el = document.getElementById('smsg-room'); if (el) 
 
 /* ── CREATE / JOIN ── */
 function setLobbyMsg(m) { var el = document.getElementById('smsg-lobby'); if (el) el.textContent = m; }
+
+function copyRoomCode() {
+  var btn = event.currentTarget;
+  navigator.clipboard.writeText(roomCode).then(function() {
+    btn.textContent = '복사됨 ✓';
+    setTimeout(function() { btn.textContent = '코드 복사하기'; }, 1500);
+  }).catch(function() {
+    btn.textContent = roomCode;
+  });
+}
+
+function pasteRoomCode() {
+  navigator.clipboard.readText().then(function(text) {
+    var code = text.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
+    roomCodeDraft = code;
+    renderRoomCodeDisplay();
+  }).catch(function() {
+    setLobbyMsg('붙여넣기 권한이 없어요. 직접 입력해주세요.');
+  });
+}
 
 function createRoom() {
   setLobbyMsg('');
