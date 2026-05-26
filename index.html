@@ -400,13 +400,13 @@
       </button>
     </div>
 
-    <div class="dtoggle">
+    <div class="dtoggle" id="dtoggle">
       <span class="dtoggle-label">DIGITS:</span>
       <button class="tbtn"        id="btn3" onclick="setDigits(3)">3</button>
       <button class="tbtn active" id="btn4" onclick="setDigits(4)">4</button>
     </div>
 
-    <div class="score-bar">
+    <div class="score-bar" id="score-bar-main">
       <div class="score-item">
         <span class="score-label">TRIES</span>
         <span class="score-value" id="tries">000</span>
@@ -712,7 +712,16 @@
   function clearMsg() { document.getElementById('smsg').textContent = ''; }
 
   function setMode(m) {
-    if (mode === 'room' && m !== 'room') leaveRoomSilent();
+    if (mode === 'room' && m !== 'room') {
+      var gameSlot = document.getElementById('room-game-slot');
+      var isActive = gameSlot && gameSlot.style.display !== 'none';
+      if (isActive) {
+        if (!confirm('게임이 종료됩니다. 방을 나가시겠어요?')) return;
+        var code = roomCode;
+        if (code && typeof fbDb !== 'undefined' && fbDb) fbDb.ref('rooms/' + code + '/status').set('abandoned').catch(function(){});
+      }
+      leaveRoomSilent();
+    }
     mode = m;
     document.getElementById('mode-game').className   = 'mtbtn' + (m === 'game'   ? ' active' : '');
     document.getElementById('mode-helper').className = 'mtbtn' + (m === 'helper' ? ' active' : '');
@@ -766,12 +775,14 @@
     document.getElementById('helper-main-slot').style.display      = 'none';
     document.getElementById('helper-my-controls').style.display    = 'none';
     document.getElementById('helper-their-controls').style.display = 'none';
+    document.getElementById('dtoggle').style.display               = isRoom   ? 'none' : '';
+    document.getElementById('score-bar-main').style.display        = isRoom   ? 'none' : '';
     document.getElementById('room-lobby-slot').style.display       = isRoom   ? '' : 'none';
     document.getElementById('room-waiting-slot').style.display     = 'none';
     document.getElementById('room-setup-slot').style.display       = 'none';
     document.getElementById('label-pick').style.display            = isRoom   ? 'none' : '';
     document.getElementById('npool').style.display                 = isRoom   ? 'none' : '';
-    if (isRoom) { roomCodeDraft = ''; renderRoomCodeDisplay(); }
+    if (isRoom) { roomCodeDraft = ''; renderRoomCodeDisplay(); roomDigitElimState = {}; }
     document.getElementById('room-game-slot').style.display        = 'none';
     document.getElementById('room-setup-controls').style.display   = 'none';
     document.getElementById('room-game-controls').style.display    = 'none';
@@ -804,7 +815,7 @@
     for (var i = 0; i < ORDER.length; i++) {
       var d = ORDER[i];
       var el = document.createElement('div');
-      el.className = 'pd' + ((eliminated[d] || (helperTab !== 'their' && isHistoryElim(d))) ? ' elim' : '');
+      el.className = 'pd' + ((eliminated[d] || (helperTab !== 'their' && isHistoryElim(d)) || (mode === 'room' && isRoomHistoryElim(d))) ? ' elim' : '');
       el.textContent = d;
       (function(digit) {
         el.addEventListener('click', function() {
@@ -1328,6 +1339,19 @@ var rcurrent = [null,null,null,null], rcursor = 0;
 var rsCurrent = [null,null,null,null], rsCursor = 0;
 var roomGameOver = false;
 var roomCodeDraft = '';
+var roomDigitElimState = {};
+
+function isRoomHistoryElim(d) {
+  for (var i in roomDigitElimState) {
+    var arr = roomDigitElimState[i];
+    var guess = arr.guess;
+    if (!guess) continue;
+    for (var j = 0; j < guess.length; j++) {
+      if (guess[j] === d && arr.elim[j]) return true;
+    }
+  }
+  return false;
+}
 
 function renderRoomCodeDisplay() {
   var el = document.getElementById('room-code-draft');
@@ -1407,6 +1431,13 @@ function onRoomUpdate(d) {
   var ss  = document.getElementById('room-setup-slot');
   var ws  = document.getElementById('room-waiting-slot');
 
+  if (d.status === 'abandoned') {
+    roomGameOver = true;
+    if (roomListenerRef) { roomListenerRef.off(); roomListenerRef = null; }
+    document.getElementById('winarea').innerHTML =
+      '<div class="wmsg"><div class="wmsg-title">상대방이 방을 나갔습니다.</div></div>';
+    return;
+  }
   if (d.status === 'setup' && ws && ws.style.display !== 'none') {
     showSlot('setup');
   }
@@ -1449,6 +1480,7 @@ function showSlot(which) {
     setRoomMsg('');
   }
   if (which === 'game') {
+    roomDigitElimState = {};
     document.getElementById('history-section').style.display = '';
     document.getElementById('hbox-room').style.display = '';
     document.getElementById('hbox-room').innerHTML = '';
@@ -1481,19 +1513,30 @@ function updateRoomUI(d) {
   hbox.innerHTML = '';
   for (var i = myGuesses.length - 1; i >= 0; i--) {
     var g = myGuesses[i];
+    if (!roomDigitElimState[i]) roomDigitElimState[i] = { guess: g.guess, elim: new Array(g.guess.length).fill(false) };
+    var state = roomDigitElimState[i];
     var item = document.createElement('div'); item.className = 'hi';
     var left = document.createElement('div');
     left.style.cssText = 'display:flex;flex-direction:column;gap:3px;';
     var num = document.createElement('div'); num.className = 'hi-num';
     for (var ci = 0; ci < g.guess.length; ci++) {
-      var box = document.createElement('div'); box.className = 'hi-digit-box'; box.textContent = g.guess[ci];
+      var box = document.createElement('div');
+      box.className = 'hi-digit-box' + (state.elim[ci] ? ' x-elim' : '');
+      box.textContent = g.guess[ci];
+      (function(idx, s) {
+        box.addEventListener('click', function() {
+          s.elim[idx] = !s.elim[idx];
+          box.className = 'hi-digit-box' + (s.elim[idx] ? ' x-elim' : '');
+          renderPool();
+        });
+      })(ci, state);
       num.appendChild(box);
     }
     left.appendChild(num);
     var badges = document.createElement('div'); badges.className = 'rbadges';
     if (g.s > 0) { var b = document.createElement('span'); b.className = 'badge bs'; b.textContent = g.s+'S'; badges.appendChild(b); }
-    if (g.b > 0) { var b = document.createElement('span'); b.className = 'badge bb'; b.textContent = g.b+'B'; badges.appendChild(b); }
-    if (g.isOut) { var b = document.createElement('span'); b.className = 'badge bo'; b.textContent = 'OUT'; badges.appendChild(b); }
+    if (g.b > 0) { var b2 = document.createElement('span'); b2.className = 'badge bb'; b2.textContent = g.b+'B'; badges.appendChild(b2); }
+    if (g.isOut) { var b3 = document.createElement('span'); b3.className = 'badge bo'; b3.textContent = 'OUT'; badges.appendChild(b3); }
     item.appendChild(left); item.appendChild(badges);
     hbox.appendChild(item);
   }
@@ -1610,8 +1653,16 @@ function leaveRoomSilent() {
   roomCode = ''; myRole = ''; roomGameOver = false;
 }
 function leaveRoom() {
+  var code = roomCode;
+  if (code && typeof fbDb !== 'undefined' && fbDb) {
+    fbDb.ref('rooms/' + code + '/status').set('abandoned').catch(function(){});
+  }
   leaveRoomSilent();
-  setMode('game');
+  mode = 'game';
+  document.getElementById('mode-game').className   = 'mtbtn active';
+  document.getElementById('mode-helper').className = 'mtbtn';
+  document.getElementById('mode-room').className   = 'mtbtn';
+  startGame();
 }
 </script>
 </body>
