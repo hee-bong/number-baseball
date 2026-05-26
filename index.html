@@ -863,6 +863,15 @@
     return false;
   }
 
+  function syncAllHistoryElim() {
+    var hboxId = mode === 'helper' ? 'hbox-my' : 'hbox';
+    var el = document.getElementById(hboxId);
+    if (!el) return;
+    el.querySelectorAll('.hi-digit-box').forEach(function(b) {
+      b.classList.toggle('x-elim', isHistoryElim(b.textContent));
+    });
+  }
+
   function renderPool() {
     var c = document.getElementById('npool');
     c.innerHTML = '';
@@ -1216,7 +1225,7 @@
 
   /* ── HISTORY ── */
   function addHistory(guess, s, b, isOut, isTheir) {
-    var digitElim = (isOut && mode === 'helper' && !isTheir) ? new Array(guess.length).fill(true) : new Array(guess.length).fill(false);
+    var digitElim = (isOut && !isTheir) ? new Array(guess.length).fill(true) : new Array(guess.length).fill(false);
     historyStack.push({ guess: guess, s: s, b: b, isOut: isOut, isTheir: isTheir, digitElim: digitElim });
     var stackIdx = historyStack.length - 1;
     var item = document.createElement('div');
@@ -1234,8 +1243,8 @@
           box.addEventListener('click', function(e) {
             e.stopPropagation();
             historyStack[stackIdx].digitElim[pos] = !historyStack[stackIdx].digitElim[pos];
-            box.className = 'hi-digit-box' + (historyStack[stackIdx].digitElim[pos] ? ' x-elim' : '');
             renderPool();
+            syncAllHistoryElim();
           });
         }
         num.appendChild(box);
@@ -1268,6 +1277,7 @@
     }
     document.getElementById('history-section').style.display = '';
     hbox.insertBefore(item, hbox.firstChild);
+    if (!isTheir) syncAllHistoryElim();
     setTimeout(function() { item.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 50);
   }
 
@@ -1599,7 +1609,7 @@ function updateRoomUI(d) {
   for (var i = myGuessEntries.length - 1; i >= 0; i--) {
     var key = myGuessEntries[i][0];
     var g   = myGuessEntries[i][1];
-    if (!roomDigitElimState[key]) roomDigitElimState[key] = { guess: g.guess, elim: new Array(g.guess.length).fill(false) };
+    if (!roomDigitElimState[key]) roomDigitElimState[key] = { guess: g.guess, elim: g.isOut ? new Array(g.guess.length).fill(true) : new Array(g.guess.length).fill(false) };
     var state = roomDigitElimState[key];
     var item = document.createElement('div'); item.className = 'hi';
     var left = document.createElement('div');
@@ -1607,7 +1617,7 @@ function updateRoomUI(d) {
     var num = document.createElement('div'); num.className = 'hi-num';
     for (var ci = 0; ci < g.guess.length; ci++) {
       var box = document.createElement('div');
-      box.className = 'hi-digit-box' + (state.elim[ci] ? ' x-elim' : '');
+      box.className = 'hi-digit-box' + ((state.elim[ci] || isRoomHistoryElim(g.guess[ci])) ? ' x-elim' : '');
       box.textContent = g.guess[ci];
       (function(idx, s) {
         box.addEventListener('click', function() {
