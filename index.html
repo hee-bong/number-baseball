@@ -391,12 +391,12 @@
         <span class="mtbtn-desc" id="desc-game">컴퓨터가 숫자를 숨겨요</span>
       </button>
       <button class="mtbtn" id="mode-helper" onclick="setMode('helper')">
-        도우미
-        <span class="mtbtn-desc" id="desc-helper">친구와 직접 대결할 때</span>
+        HELPER
+        <span class="mtbtn-desc" id="desc-helper">오프라인 친구와 대결</span>
       </button>
       <button class="mtbtn" id="mode-room" onclick="setMode('room')">
-        1:1 배틀
-        <span class="mtbtn-desc">실시간 온라인 대결</span>
+        BATTLE
+        <span class="mtbtn-desc">실시간 1:1 온라인</span>
       </button>
     </div>
 
@@ -448,6 +448,7 @@
 
     <!-- ── ROOM MODE SLOTS ── -->
     <div id="room-lobby-slot" style="display:none;">
+      <div class="smsg" id="smsg-lobby" style="min-height:1.2em;margin-bottom:.4rem;"></div>
       <div class="room-lobby-btns">
         <button class="abtn primary" onclick="createRoom()">방 만들기</button>
         <div class="room-divider">— OR —</div>
@@ -1354,8 +1355,11 @@ function genRoomCode() {
 function setRoomMsg(m) { var el = document.getElementById('smsg-room'); if (el) el.textContent = m; }
 
 /* ── CREATE / JOIN ── */
+function setLobbyMsg(m) { var el = document.getElementById('smsg-lobby'); if (el) el.textContent = m; }
+
 function createRoom() {
-  initFb();
+  setLobbyMsg('');
+  try { initFb(); } catch(e) { setLobbyMsg('Firebase 오류: ' + e.message); return; }
   var code = genRoomCode();
   roomCode = code; myRole = 'host';
   fbDb.ref('rooms/' + code).set({
@@ -1368,23 +1372,24 @@ function createRoom() {
     showSlot('waiting');
     document.getElementById('room-code-show').textContent = code;
     listenRoom();
-  }).catch(function(e) { setMsg('방 생성 실패: ' + e.message); });
+  }).catch(function(e) { setLobbyMsg('방 생성 실패: ' + e.message); });
 }
 
 function joinRoom() {
-  initFb();
+  setLobbyMsg('');
+  try { initFb(); } catch(e) { setLobbyMsg('Firebase 오류: ' + e.message); return; }
   var code = roomCodeDraft.toUpperCase().trim();
-  if (code.length !== 6) { setMsg('6자리 코드를 입력해주세요'); return; }
+  if (code.length !== 6) { setLobbyMsg('6자리 코드를 입력해주세요'); return; }
   fbDb.ref('rooms/' + code).once('value').then(function(snap) {
     var d = snap.val();
-    if (!d) { setMsg('존재하지 않는 방이에요'); return; }
-    if (d.status !== 'waiting') { setMsg('이미 시작된 방이에요'); return; }
+    if (!d) { setLobbyMsg('존재하지 않는 방이에요'); return; }
+    if (d.status !== 'waiting') { setLobbyMsg('이미 시작된 방이에요'); return; }
     roomCode = code; myRole = 'guest';
     fbDb.ref('rooms/' + code + '/status').set('setup').then(function() {
       showSlot('setup');
       listenRoom();
     });
-  }).catch(function(e) { setMsg('참가 실패: ' + e.message); });
+  }).catch(function(e) { setLobbyMsg('참가 실패: ' + e.message); });
 }
 
 /* ── FIREBASE LISTENER ── */
