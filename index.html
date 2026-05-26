@@ -357,7 +357,7 @@
     .rkkey:hover { background: var(--surface-3); border-color: var(--amber); color: var(--amber); }
     .rkkey:active { transform: translateY(1px); }
     .rkkey.del { color: var(--out); }
-    .rkkey.join { color: var(--bg); background: var(--amber); border-color: var(--amber); font-size: 9px; font-family: var(--px); letter-spacing: 1px; }
+    .rkkey.join { color: var(--bg); background: var(--amber); border-color: var(--amber); font-size: 12px; font-family: var(--kr); font-weight: 700; letter-spacing: 0; }
     .turn-bar { display: flex; align-items: center; justify-content: center; gap: 8px; padding: .5rem; background: var(--surface-2); border-radius: 8px; margin-bottom: .75rem; }
     .turn-chip { font-family: var(--px); font-size: 8px; padding: 5px 12px; border-radius: 4px; transition: all .2s; }
     .turn-chip.active { background: var(--amber); color: #000; }
@@ -367,7 +367,7 @@
     .room-score-bar span { color: var(--amber); font-family: var(--px); font-size: 11px; }
     .room-opponent-waiting { font-family: var(--kr); font-size: 13px; font-weight: 600; color: var(--amber); text-align: center; padding: .75rem; letter-spacing: 0; animation: pulse 1.5s ease-in-out infinite; }
     .room-my-secret-bar { font-family: var(--kr); font-size: 12px; color: var(--text-dim); text-align: center; margin-bottom: .5rem; }
-    .history-sub-label { font-family: var(--px); font-size: 7px; color: var(--text-dim); text-align: center; letter-spacing: 2px; margin: .75rem 0 .25rem; }
+    .history-sub-label { font-family: var(--kr); font-size: 12px; font-weight: 600; color: var(--text-subtle); text-align: center; letter-spacing: 0; margin: .75rem 0 .25rem; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
   </style>
 </head>
@@ -503,7 +503,7 @@
           <button class="rkkey" onclick="addRoomCodeChar('Y')">Y</button>
           <button class="rkkey" onclick="addRoomCodeChar('Z')">Z</button>
           <button class="rkkey del" style="grid-column:span 2" onclick="delRoomCodeChar()">⌫ DEL</button>
-          <button class="rkkey join" style="grid-column:span 2" onclick="joinRoom()">JOIN ↵</button>
+          <button class="rkkey join" style="grid-column:span 2" onclick="joinRoom()">참가</button>
           <button class="rkkey" style="grid-column:span 10;font-family:var(--kr);font-size:12px;font-weight:700;letter-spacing:0;padding:9px;" onclick="pasteRoomCode()">코드 붙여넣기</button>
         </div>
       </div>
@@ -526,13 +526,17 @@
     </div>
 
     <div id="room-game-slot" style="display:none;">
-      <div class="room-my-secret-bar">내 숫자: <span id="room-my-secret-val" style="font-family:var(--px);font-size:13px;color:var(--strike);letter-spacing:4px;"></span></div>
+      <div class="my-secret-bar">
+        <span class="my-secret-lbl">MY SECRET</span>
+        <span class="my-secret-dots" id="room-my-secret-val"></span>
+        <span style="visibility:hidden" aria-hidden="true" class="my-secret-lbl">·····</span>
+      </div>
       <div class="turn-bar">
         <div class="turn-chip active" id="room-my-chip">MY TURN</div>
         <div class="turn-chip inactive" id="room-their-chip">THEIR TURN</div>
       </div>
       <div class="room-score-bar">내 시도: <span id="room-my-tries">0</span>회 &nbsp;|&nbsp; 상대: <span id="room-their-tries">0</span>회</div>
-      <div class="room-waiting-overlay" id="room-wait-overlay" style="display:none;">상대방이 추측 중...</div>
+      <div class="room-waiting-overlay" id="room-wait-overlay" style="display:none;">OPPONENT IS THINKING...</div>
       <div class="drow" id="rdrow"></div>
     </div>
 
@@ -605,9 +609,9 @@
       <div class="hbox" id="hbox"></div>
       <div class="hbox" id="hbox-my" style="display:none;"></div>
       <div class="hbox" id="hbox-their" style="display:none;"></div>
-      <div class="history-sub-label" id="room-label-mine" style="display:none;">── 내 추측 ──</div>
+      <div class="history-sub-label" id="room-label-mine" style="display:none;">내 추측</div>
       <div class="hbox" id="hbox-room" style="display:none;"></div>
-      <div class="history-sub-label" id="room-label-opp" style="display:none;">── 상대방 추측 ──</div>
+      <div class="history-sub-label" id="room-label-opp" style="display:none;">상대방 추측</div>
       <div class="hbox" id="hbox-room-opp" style="display:none;"></div>
     </div>
 
@@ -673,6 +677,7 @@
       headerSub:      '숫자야구',
       gameDesc:       '숨겨진 수를\n직접 맞춰요',
       helperDesc:     '오프라인에서\n친구와 대결할 때',
+      roomDesc:       '실시간으로\n친구와 1:1 대결',
       qrTitle:        '☕ 카카오페이 송금',
       qrSub:          'QR코드를 스캔해 주세요',
       footerSub:      '숫자를 눌러 입력 · ENTER로 제출 · Backspace로 삭제',
@@ -693,7 +698,8 @@
     en: {
       headerSub:      'Number Baseball',
       gameDesc:       'Guess the hidden number',
-      helperDesc:     'Use when playing with a friend',
+      helperDesc:     'Use when playing offline',
+      roomDesc:       'Real-time\n1:1 online battle',
       qrTitle:        '☕ KakaoPay Transfer',
       qrSub:          'Scan the QR code to send',
       footerSub:      'Click numbers · ENTER to submit · Backspace to delete',
@@ -724,6 +730,7 @@
     document.getElementById('lang-btn').textContent            = lang === 'ko' ? 'EN' : 'KO';
     document.getElementById('desc-game').textContent           = t.gameDesc;
     document.getElementById('desc-helper').textContent         = t.helperDesc;
+    document.getElementById('desc-room').textContent           = t.roomDesc;
     document.getElementById('qr-box-title').textContent        = t.qrTitle;
     document.getElementById('qr-box-sub').textContent          = t.qrSub;
     document.getElementById('footer-sub').textContent          = t.footerSub;
@@ -831,6 +838,10 @@
     document.getElementById('room-game-controls').style.display    = 'none';
     document.getElementById('hbox-room').innerHTML = '';
     document.getElementById('hbox-room').style.display = 'none';
+    document.getElementById('hbox-room-opp').innerHTML = '';
+    document.getElementById('hbox-room-opp').style.display = 'none';
+    document.getElementById('room-label-mine').style.display = 'none';
+    document.getElementById('room-label-opp').style.display = 'none';
     if (isHelper) {
       document.getElementById('smsg-setup').textContent = '';
       document.getElementById('their-result').style.display = 'none';
@@ -1384,6 +1395,7 @@ var roomGameOver = false;
 var roomCodeDraft = '';
 var roomDigitElimState = {};
 var myRoomSecret = '';
+var lastRoomData = null;
 
 function isRoomHistoryElim(d) {
   for (var i in roomDigitElimState) {
@@ -1490,6 +1502,7 @@ function listenRoom() {
 }
 
 function onRoomUpdate(d) {
+  lastRoomData = d;
   var gs  = document.getElementById('room-game-slot');
   var ss  = document.getElementById('room-setup-slot');
   var ws  = document.getElementById('room-waiting-slot');
@@ -1570,20 +1583,24 @@ function updateRoomUI(d) {
   if (ov) ov.style.display = isMyTurn ? 'none' : '';
   if (sb && !roomGameOver) sb.disabled = !isMyTurn;
 
-  var myGuesses   = d[myRole + 'Guesses']   ? Object.values(d[myRole + 'Guesses'])   : [];
-  var oppGuesses  = d[(myRole==='host'?'guest':'host') + 'Guesses'] ? Object.values(d[(myRole==='host'?'guest':'host') + 'Guesses']) : [];
+  var oppRole = myRole === 'host' ? 'guest' : 'host';
+  var myGuessData  = d[myRole + 'Guesses']  || {};
+  var oppGuessData = d[oppRole + 'Guesses'] || {};
+  var myGuessEntries  = Object.entries(myGuessData).sort(function(a,b){return a[0]<b[0]?-1:1;});
+  var oppGuessEntries = Object.entries(oppGuessData).sort(function(a,b){return a[0]<b[0]?-1:1;});
   var mt = document.getElementById('room-my-tries');
   var tt = document.getElementById('room-their-tries');
-  if (mt) mt.textContent = myGuesses.length;
-  if (tt) tt.textContent = oppGuesses.length;
+  if (mt) mt.textContent = myGuessEntries.length;
+  if (tt) tt.textContent = oppGuessEntries.length;
 
   var hbox = document.getElementById('hbox-room');
   if (!hbox) return;
   hbox.innerHTML = '';
-  for (var i = myGuesses.length - 1; i >= 0; i--) {
-    var g = myGuesses[i];
-    if (!roomDigitElimState[i]) roomDigitElimState[i] = { guess: g.guess, elim: new Array(g.guess.length).fill(false) };
-    var state = roomDigitElimState[i];
+  for (var i = myGuessEntries.length - 1; i >= 0; i--) {
+    var key = myGuessEntries[i][0];
+    var g   = myGuessEntries[i][1];
+    if (!roomDigitElimState[key]) roomDigitElimState[key] = { guess: g.guess, elim: new Array(g.guess.length).fill(false) };
+    var state = roomDigitElimState[key];
     var item = document.createElement('div'); item.className = 'hi';
     var left = document.createElement('div');
     left.style.cssText = 'display:flex;flex-direction:column;gap:3px;';
@@ -1595,8 +1612,8 @@ function updateRoomUI(d) {
       (function(idx, s) {
         box.addEventListener('click', function() {
           s.elim[idx] = !s.elim[idx];
-          box.className = 'hi-digit-box' + (s.elim[idx] ? ' x-elim' : '');
           renderPool();
+          if (lastRoomData) updateRoomUI(lastRoomData);
         });
       })(ci, state);
       num.appendChild(box);
@@ -1613,8 +1630,8 @@ function updateRoomUI(d) {
   var hboxOpp = document.getElementById('hbox-room-opp');
   if (hboxOpp) {
     hboxOpp.innerHTML = '';
-    for (var oi = oppGuesses.length - 1; oi >= 0; oi--) {
-      var og = oppGuesses[oi];
+    for (var oi = oppGuessEntries.length - 1; oi >= 0; oi--) {
+      var og = oppGuessEntries[oi][1];
       var oitem = document.createElement('div'); oitem.className = 'hi';
       oitem.style.opacity = '.75';
       var oleft = document.createElement('div');
