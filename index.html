@@ -499,7 +499,7 @@
     <div id="room-waiting-slot" style="display:none;">
       <div class="room-status-msg">친구에게 아래 코드를 알려주세요</div>
       <div class="room-code-display" id="room-code-show"></div>
-      <div class="room-opponent-waiting" id="room-wait-anim">상대방 기다리는 중...</div>
+      <div class="room-opponent-waiting" id="room-wait-anim">WAITING FOR OPPONENT...</div>
     </div>
 
     <div id="room-setup-slot" style="display:none;">
@@ -517,7 +517,7 @@
         <div class="turn-chip inactive" id="room-their-chip">THEIR TURN</div>
       </div>
       <div class="room-score-bar">내 시도: <span id="room-my-tries">0</span>회 &nbsp;|&nbsp; 상대: <span id="room-their-tries">0</span>회</div>
-      <div class="room-waiting-overlay" id="room-wait-overlay" style="display:none;">상대방이 추측 중...</div>
+      <div class="room-waiting-overlay" id="room-wait-overlay" style="display:none;">OPPONENT IS THINKING...</div>
       <div class="drow" id="rdrow"></div>
     </div>
 
@@ -1540,7 +1540,7 @@ function setRoomSecret() {
       if (d.host.ready && d.guest.ready) {
         fbDb.ref('rooms/' + roomCode + '/status').set('playing');
       } else {
-        setRoomMsg('상대방 기다리는 중...');
+        setRoomMsg('WAITING FOR OPPONENT...');
       }
     });
   });
