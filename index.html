@@ -310,6 +310,16 @@
 
     .qr-close:hover { background: var(--surface-3); }
 
+    .confirm-modal { position: fixed; inset: 0; background: rgba(0,0,0,.75); display: flex; align-items: center; justify-content: center; z-index: 2000; animation: fadein .15s ease; }
+    .confirm-box { background: var(--surface); border: 1px solid var(--border-2); padding: 1.75rem 2rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1rem; min-width: 280px; }
+    .confirm-msg { font-family: var(--kr); font-size: 15px; font-weight: 600; color: var(--text-bright); line-height: 1.5; }
+    .confirm-btns { display: flex; gap: .75rem; width: 100%; }
+    .confirm-btns button { flex: 1; padding: 12px; font-family: var(--kr); font-size: 14px; font-weight: 700; border: 1px solid var(--border-2); cursor: pointer; transition: background .1s; }
+    .confirm-ok { background: var(--out-bg); color: var(--out); border-color: var(--out) !important; }
+    .confirm-ok:hover { background: rgba(248,113,113,.2); }
+    .confirm-cancel { background: var(--surface-2); color: var(--text); }
+    .confirm-cancel:hover { background: var(--surface-3); }
+
     .lang-btn { font-family: var(--px); font-size: 7px; padding: 3px 8px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); cursor: pointer; letter-spacing: 1px; transition: all .1s; }
 
     .lang-btn:hover { border-color: var(--amber); color: var(--amber); }
@@ -622,6 +632,16 @@
   </div>
 </div>
 
+<div id="confirm-modal" class="confirm-modal" style="display:none;">
+  <div class="confirm-box">
+    <div class="confirm-msg" id="confirm-msg"></div>
+    <div class="confirm-btns">
+      <button class="confirm-ok" id="confirm-ok">나가기</button>
+      <button class="confirm-cancel" onclick="closeConfirm()">취소</button>
+    </div>
+  </div>
+</div>
+
 <footer>
   <div class="footer-main">⚾ NUMBER BASEBALL · v1.0.21</div>
   <div class="footer-sub" id="footer-sub">숫자를 눌러 입력 · ENTER로 제출 · Backspace로 삭제</div>
@@ -713,14 +733,29 @@
   function setMsg(m)  { document.getElementById('smsg').textContent = m; }
   function clearMsg() { document.getElementById('smsg').textContent = ''; }
 
+  function showConfirm(msg, onOk) {
+    document.getElementById('confirm-msg').textContent = msg;
+    document.getElementById('confirm-ok').onclick = function() { closeConfirm(); onOk(); };
+    document.getElementById('confirm-modal').style.display = 'flex';
+  }
+  function closeConfirm() { document.getElementById('confirm-modal').style.display = 'none'; }
+
   function setMode(m) {
     if (mode === 'room' && m !== 'room') {
       var gameSlot = document.getElementById('room-game-slot');
       var isActive = gameSlot && gameSlot.style.display !== 'none';
       if (isActive) {
-        if (!confirm('게임이 종료됩니다. 방을 나가시겠어요?')) return;
-        var code = roomCode;
-        if (code && typeof fbDb !== 'undefined' && fbDb) fbDb.ref('rooms/' + code + '/status').set('abandoned').catch(function(){});
+        showConfirm('게임이 종료됩니다.\n방을 나가시겠어요?', function() {
+          var code = roomCode;
+          if (code && typeof fbDb !== 'undefined' && fbDb) fbDb.ref('rooms/' + code + '/status').set('abandoned').catch(function(){});
+          leaveRoomSilent();
+          mode = m;
+          document.getElementById('mode-game').className   = 'mtbtn' + (m === 'game'   ? ' active' : '');
+          document.getElementById('mode-helper').className = 'mtbtn' + (m === 'helper' ? ' active' : '');
+          document.getElementById('mode-room').className   = 'mtbtn' + (m === 'room'   ? ' active' : '');
+          startGame();
+        });
+        return;
       }
       leaveRoomSilent();
     }
