@@ -500,7 +500,7 @@
     <div id="room-waiting-slot" style="display:none;">
       <div class="room-status-msg">친구에게 아래 코드를 알려주세요</div>
       <div class="room-code-display" id="room-code-show"></div>
-      <button class="abtn" style="width:100%;font-family:var(--kr);font-size:13px;font-weight:700;letter-spacing:0;margin-bottom:.5rem;" onclick="copyRoomCode()">코드 복사하기</button>
+      <button class="abtn" style="width:100%;font-family:var(--kr);font-size:13px;font-weight:700;letter-spacing:0;margin-bottom:.5rem;" onclick="copyRoomCode(this)">코드 복사하기</button>
       <div class="room-opponent-waiting" id="room-wait-anim">WAITING FOR OPPONENT...</div>
     </div>
 
@@ -1383,8 +1383,7 @@ function setRoomMsg(m) { var el = document.getElementById('smsg-room'); if (el) 
 /* ── CREATE / JOIN ── */
 function setLobbyMsg(m) { var el = document.getElementById('smsg-lobby'); if (el) el.textContent = m; }
 
-function copyRoomCode() {
-  var btn = event.currentTarget;
+function copyRoomCode(btn) {
   navigator.clipboard.writeText(roomCode).then(function() {
     btn.textContent = '복사됨 ✓';
     setTimeout(function() { btn.textContent = '코드 복사하기'; }, 1500);
