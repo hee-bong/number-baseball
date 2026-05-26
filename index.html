@@ -334,6 +334,23 @@
       .score-value { font-size: 14px; }
       .hi-num { font-size: 13px; min-width: 56px; }
     }
+
+    /* ── ROOM MODE ── */
+    .room-code-display { font-family: var(--px); font-size: 26px; color: var(--amber); letter-spacing: 8px; text-align: center; padding: .75rem 1rem; border: 2px solid var(--amber); border-radius: 8px; margin: .75rem 0; background: var(--surface-2); filter: drop-shadow(0 0 8px rgba(251,191,36,.3)); }
+    .room-status-msg { font-family: var(--kr); font-size: 12px; color: var(--text-dim); text-align: center; margin: .25rem 0; }
+    .room-join-input { font-family: var(--px); font-size: 20px; color: var(--amber); background: var(--surface-2); border: 2px solid var(--border-2); border-radius: 8px; padding: .5rem 1rem; text-align: center; width: 100%; letter-spacing: 6px; text-transform: uppercase; outline: none; margin-bottom: .5rem; box-sizing: border-box; }
+    .room-join-input:focus { border-color: var(--amber); }
+    .room-lobby-btns { display: flex; flex-direction: column; gap: .6rem; margin-top: .75rem; }
+    .room-divider { font-family: var(--px); font-size: 8px; color: var(--text-dim); text-align: center; letter-spacing: 3px; margin: .2rem 0; }
+    .turn-bar { display: flex; align-items: center; justify-content: center; gap: 8px; padding: .5rem; background: var(--surface-2); border-radius: 8px; margin-bottom: .75rem; }
+    .turn-chip { font-family: var(--px); font-size: 8px; padding: 5px 12px; border-radius: 4px; transition: all .2s; }
+    .turn-chip.active { background: var(--amber); color: #000; }
+    .turn-chip.inactive { background: var(--surface-3); color: var(--text-dim); }
+    .room-waiting-overlay { font-family: var(--px); font-size: 9px; color: var(--text-dim); text-align: center; padding: 1rem; letter-spacing: 2px; animation: pulse 1.5s ease-in-out infinite; }
+    .room-score-bar { display: flex; justify-content: center; gap: 1.5rem; font-family: var(--px); font-size: 8px; color: var(--text-dim); margin-bottom: .5rem; letter-spacing: 1px; }
+    .room-score-bar span { color: var(--amber); }
+    .room-opponent-waiting { font-family: var(--px); font-size: 9px; color: var(--amber); text-align: center; padding: .75rem; letter-spacing: 2px; animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
   </style>
 </head>
 <body>
@@ -370,6 +387,10 @@
       <button class="mtbtn" id="mode-helper" onclick="setMode('helper')">
         HELPER
         <span class="mtbtn-desc" id="desc-helper">친구와 대결할 때 사용해요</span>
+      </button>
+      <button class="mtbtn" id="mode-room" onclick="setMode('room')">
+        BATTLE
+        <span class="mtbtn-desc">실시간 1:1 대결</span>
       </button>
     </div>
 
@@ -419,6 +440,41 @@
       <div id="helper-their-slot" style="display:none;"><div class="drow" id="tdrow"></div></div>
     </div>
 
+    <!-- ── ROOM MODE SLOTS ── -->
+    <div id="room-lobby-slot" style="display:none;">
+      <div class="room-lobby-btns">
+        <button class="abtn primary" onclick="createRoom()">방 만들기</button>
+        <div class="room-divider">— OR —</div>
+        <input class="room-join-input" id="room-code-input" placeholder="XXXXXX" maxlength="6">
+        <button class="abtn" onclick="joinRoom()">방 참가 ↵</button>
+      </div>
+    </div>
+
+    <div id="room-waiting-slot" style="display:none;">
+      <div class="room-status-msg">친구에게 아래 코드를 알려주세요</div>
+      <div class="room-code-display" id="room-code-show"></div>
+      <div class="room-opponent-waiting" id="room-wait-anim">상대방 기다리는 중...</div>
+    </div>
+
+    <div id="room-setup-slot" style="display:none;">
+      <div class="secret-setup-header">
+        <div class="secret-step-badge">STEP 1 / 2</div>
+        <div class="secret-setup-title">내 비밀 숫자를 정해주세요</div>
+        <div class="secret-setup-desc">상대방이 맞춰야 할 숫자예요</div>
+      </div>
+      <div class="drow secret-drow" id="rdrow-secret"></div>
+    </div>
+
+    <div id="room-game-slot" style="display:none;">
+      <div class="turn-bar">
+        <div class="turn-chip active" id="room-my-chip">MY TURN</div>
+        <div class="turn-chip inactive" id="room-their-chip">THEIR TURN</div>
+      </div>
+      <div class="room-score-bar">내 시도: <span id="room-my-tries">0</span>회 &nbsp;|&nbsp; 상대: <span id="room-their-tries">0</span>회</div>
+      <div class="room-waiting-overlay" id="room-wait-overlay" style="display:none;">상대방이 추측 중...</div>
+      <div class="drow" id="rdrow"></div>
+    </div>
+
     <!-- ── NUMBER POOL (슬롯 바로 아래) ── -->
     <div class="section-label" id="label-pick">PICK A NUMBER</div>
     <div class="npool" id="npool"></div>
@@ -463,6 +519,22 @@
       </div>
     </div>
 
+    <div id="room-setup-controls" style="display:none;">
+      <div class="smsg" id="smsg-room"></div>
+      <div class="btnrow">
+        <button class="abtn" onclick="clearLastRS()">⌫ DEL</button>
+        <button class="abtn primary" onclick="setRoomSecret()">START ↵</button>
+      </div>
+    </div>
+
+    <div id="room-game-controls" style="display:none;">
+      <div class="btnrow">
+        <button class="abtn" onclick="clearLastR()">⌫ DEL</button>
+        <button class="abtn primary" onclick="submitRoomGuess()" id="room-subbtn">ENTER ↵</button>
+        <button class="abtn" onclick="leaveRoom()">방 나가기</button>
+      </div>
+    </div>
+
     <div class="smsg" id="smsg"></div>
     <div id="winarea"></div>
 
@@ -472,6 +544,7 @@
       <div class="hbox" id="hbox"></div>
       <div class="hbox" id="hbox-my" style="display:none;"></div>
       <div class="hbox" id="hbox-their" style="display:none;"></div>
+      <div class="hbox" id="hbox-room"  style="display:none;"></div>
     </div>
 
   </div>
@@ -502,7 +575,7 @@
 </div>
 
 <footer>
-  <div class="footer-main">⚾ NUMBER BASEBALL · v1.0.20</div>
+  <div class="footer-main">⚾ NUMBER BASEBALL · v1.0.21</div>
   <div class="footer-sub" id="footer-sub">숫자를 눌러 입력 · ENTER로 제출 · Backspace로 삭제</div>
   <button class="kakao-share-btn" id="kakao-share-btn" onclick="shareKakao()">카카오톡 공유</button>
   <div class="footer-credit">made by heebong</div>
@@ -593,9 +666,11 @@
   function clearMsg() { document.getElementById('smsg').textContent = ''; }
 
   function setMode(m) {
+    if (mode === 'room' && m !== 'room') leaveRoomSilent();
     mode = m;
     document.getElementById('mode-game').className   = 'mtbtn' + (m === 'game'   ? ' active' : '');
     document.getElementById('mode-helper').className = 'mtbtn' + (m === 'helper' ? ' active' : '');
+    document.getElementById('mode-room').className   = 'mtbtn' + (m === 'room'   ? ' active' : '');
     startGame();
   }
 
@@ -637,6 +712,7 @@
     document.documentElement.style.setProperty('--digits', digits);
     var isGame   = mode === 'game';
     var isHelper = mode === 'helper';
+    var isRoom   = mode === 'room';
     document.getElementById('game-slot').style.display             = isGame   ? '' : 'none';
     document.getElementById('game-controls').style.display         = isGame   ? '' : 'none';
     document.getElementById('helper-setup-slot').style.display     = isHelper ? '' : 'none';
@@ -644,6 +720,14 @@
     document.getElementById('helper-main-slot').style.display      = 'none';
     document.getElementById('helper-my-controls').style.display    = 'none';
     document.getElementById('helper-their-controls').style.display = 'none';
+    document.getElementById('room-lobby-slot').style.display       = isRoom   ? '' : 'none';
+    document.getElementById('room-waiting-slot').style.display     = 'none';
+    document.getElementById('room-setup-slot').style.display       = 'none';
+    document.getElementById('room-game-slot').style.display        = 'none';
+    document.getElementById('room-setup-controls').style.display   = 'none';
+    document.getElementById('room-game-controls').style.display    = 'none';
+    document.getElementById('hbox-room').innerHTML = '';
+    document.getElementById('hbox-room').style.display = 'none';
     if (isHelper) {
       document.getElementById('smsg-setup').textContent = '';
       document.getElementById('their-result').style.display = 'none';
@@ -681,6 +765,10 @@
             if (!mySecret) addSecretDigit(digit);
             else if (helperTab === 'my') addDigitH(digit);
             else addDigitT(digit);
+          } else if (mode === 'room') {
+            var rss = document.getElementById('room-setup-slot');
+            if (rss && rss.style.display !== 'none') addDigitRS(digit);
+            else addDigitR(digit);
           }
         });
       })(d);
@@ -1077,6 +1165,10 @@
         if (!mySecret) addSecretDigit(e.key);
         else if (helperTab === 'my') addDigitH(e.key);
         else addDigitT(e.key);
+      } else if (mode === 'room') {
+        var rss = document.getElementById('room-setup-slot');
+        if (rss && rss.style.display !== 'none') addDigitRS(e.key);
+        else addDigitR(e.key);
       }
     } else if (e.key === 'Backspace') {
       if (mode === 'game' && !gameOver) clearLast();
@@ -1084,6 +1176,10 @@
         if (!mySecret) clearLastS();
         else if (helperTab === 'my') clearLastH();
         else clearLastT();
+      } else if (mode === 'room') {
+        var rss2 = document.getElementById('room-setup-slot');
+        if (rss2 && rss2.style.display !== 'none') clearLastRS();
+        else clearLastR();
       }
     } else if (e.key === 'Enter') {
       if (mode === 'game' && !gameOver) submitGuess();
@@ -1091,6 +1187,10 @@
         if (!mySecret) setMySecret();
         else if (helperTab === 'my') submitHelper();
         else submitTheirGuess();
+      } else if (mode === 'room') {
+        var rss3 = document.getElementById('room-setup-slot');
+        if (rss3 && rss3.style.display !== 'none') setRoomSecret();
+        else submitRoomGuess();
       }
     }
   });
@@ -1148,5 +1248,293 @@
   integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"
   crossorigin="anonymous"></script>
 <script type="text/javascript" src="//t1.kakaocdn.net/kas/static/ba.min.js" async></script>
+
+<!-- Firebase compat SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+/* ── FIREBASE + ROOM MODE ── */
+var fbConfig = {
+  apiKey: "AIzaSyBFH-jg1gioVzrNih49PgYaKsOpwfXr0SQ",
+  authDomain: "number-baseball-c2c93.firebaseapp.com",
+  databaseURL: "https://number-baseball-c2c93-default-rtdb.firebaseio.com",
+  projectId: "number-baseball-c2c93",
+  storageBucket: "number-baseball-c2c93.firebasestorage.app",
+  messagingSenderId: "289350896645",
+  appId: "1:289350896645:web:dbc764897eea83ec46a06c"
+};
+var fbApp = null, fbDb = null;
+function initFb() {
+  if (fbApp) return;
+  fbApp = firebase.initializeApp(fbConfig);
+  fbDb  = firebase.database();
+}
+
+/* ── ROOM STATE ── */
+var roomCode = '', myRole = '', roomListenerRef = null;
+var rcurrent = [null,null,null,null], rcursor = 0;
+var rsCurrent = [null,null,null,null], rsCursor = 0;
+var roomGameOver = false;
+
+function genRoomCode() {
+  var c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', s = '';
+  for (var i = 0; i < 6; i++) s += c[Math.floor(Math.random() * c.length)];
+  return s;
+}
+
+function setRoomMsg(m) { var el = document.getElementById('smsg-room'); if (el) el.textContent = m; }
+
+/* ── CREATE / JOIN ── */
+function createRoom() {
+  initFb();
+  var code = genRoomCode();
+  roomCode = code; myRole = 'host';
+  fbDb.ref('rooms/' + code).set({
+    status: 'waiting', digits: 4,
+    host: { secret: '', ready: false }, guest: { secret: '', ready: false },
+    hostGuesses: {}, guestGuesses: {},
+    currentTurn: 'host', winner: '',
+    createdAt: firebase.database.ServerValue.TIMESTAMP
+  }).then(function() {
+    showSlot('waiting');
+    document.getElementById('room-code-show').textContent = code;
+    listenRoom();
+  }).catch(function(e) { setMsg('방 생성 실패: ' + e.message); });
+}
+
+function joinRoom() {
+  initFb();
+  var code = document.getElementById('room-code-input').value.toUpperCase().trim();
+  if (code.length !== 6) { setMsg('6자리 코드를 입력해주세요'); return; }
+  fbDb.ref('rooms/' + code).once('value').then(function(snap) {
+    var d = snap.val();
+    if (!d) { setMsg('존재하지 않는 방이에요'); return; }
+    if (d.status !== 'waiting') { setMsg('이미 시작된 방이에요'); return; }
+    roomCode = code; myRole = 'guest';
+    fbDb.ref('rooms/' + code + '/status').set('setup').then(function() {
+      showSlot('setup');
+      listenRoom();
+    });
+  }).catch(function(e) { setMsg('참가 실패: ' + e.message); });
+}
+
+/* ── FIREBASE LISTENER ── */
+function listenRoom() {
+  if (roomListenerRef) roomListenerRef.off();
+  roomListenerRef = fbDb.ref('rooms/' + roomCode);
+  roomListenerRef.on('value', function(snap) {
+    var d = snap.val(); if (!d) return;
+    onRoomUpdate(d);
+  });
+}
+
+function onRoomUpdate(d) {
+  var gs  = document.getElementById('room-game-slot');
+  var ss  = document.getElementById('room-setup-slot');
+  var ws  = document.getElementById('room-waiting-slot');
+
+  if (d.status === 'setup' && ws && ws.style.display !== 'none') {
+    showSlot('setup');
+  }
+  if (d.status === 'playing') {
+    if (gs && gs.style.display === 'none') {
+      showSlot('game');
+      rcurrent = [null,null,null,null]; rcursor = 0;
+      renderDisplayR();
+    }
+    updateRoomUI(d);
+  }
+  if (d.status === 'done') {
+    updateRoomUI(d);
+    roomGameOver = true;
+    var subbtn = document.getElementById('room-subbtn');
+    if (subbtn) subbtn.disabled = true;
+    var isWin = d.winner === myRole;
+    document.getElementById('winarea').innerHTML =
+      '<div class="wmsg"><div class="wmsg-title">' + (isWin ? 'YOU WIN! 🎉' : 'YOU LOSE...') +
+      '</div><div class="wmsg-sub">' + (isWin ? '상대방의 숫자를 맞췄어요!' : '상대방이 먼저 맞췄어요!') + '</div></div>';
+  }
+}
+
+/* ── SHOW ROOM SLOTS ── */
+function showSlot(which) {
+  var slots = ['lobby','waiting','setup','game'];
+  slots.forEach(function(s) {
+    var el = document.getElementById('room-' + s + '-slot');
+    if (el) el.style.display = (s === which) ? '' : 'none';
+  });
+  document.getElementById('room-setup-controls').style.display = (which === 'setup') ? '' : 'none';
+  document.getElementById('room-game-controls').style.display  = (which === 'game')  ? '' : 'none';
+  if (which === 'setup') {
+    rsCurrent = [null,null,null,null]; rsCursor = 0;
+    renderDisplayRS();
+    setRoomMsg('');
+  }
+  if (which === 'game') {
+    document.getElementById('history-section').style.display = '';
+    document.getElementById('hbox-room').style.display = '';
+    document.getElementById('hbox-room').innerHTML = '';
+    document.getElementById('winarea').innerHTML = '';
+    roomGameOver = false;
+  }
+}
+
+/* ── UPDATE ROOM UI ── */
+function updateRoomUI(d) {
+  var isMyTurn = d.currentTurn === myRole;
+  var mc = document.getElementById('room-my-chip');
+  var tc = document.getElementById('room-their-chip');
+  var ov = document.getElementById('room-wait-overlay');
+  var sb = document.getElementById('room-subbtn');
+  if (mc) mc.className = 'turn-chip ' + (isMyTurn ? 'active' : 'inactive');
+  if (tc) tc.className = 'turn-chip ' + (!isMyTurn ? 'active' : 'inactive');
+  if (ov) ov.style.display = isMyTurn ? 'none' : '';
+  if (sb && !roomGameOver) sb.disabled = !isMyTurn;
+
+  var myGuesses   = d[myRole + 'Guesses']   ? Object.values(d[myRole + 'Guesses'])   : [];
+  var oppGuesses  = d[(myRole==='host'?'guest':'host') + 'Guesses'] ? Object.values(d[(myRole==='host'?'guest':'host') + 'Guesses']) : [];
+  var mt = document.getElementById('room-my-tries');
+  var tt = document.getElementById('room-their-tries');
+  if (mt) mt.textContent = myGuesses.length;
+  if (tt) tt.textContent = oppGuesses.length;
+
+  var hbox = document.getElementById('hbox-room');
+  if (!hbox) return;
+  hbox.innerHTML = '';
+  for (var i = myGuesses.length - 1; i >= 0; i--) {
+    var g = myGuesses[i];
+    var item = document.createElement('div'); item.className = 'hi';
+    var left = document.createElement('div');
+    left.style.cssText = 'display:flex;flex-direction:column;gap:3px;';
+    var num = document.createElement('div'); num.className = 'hi-num';
+    for (var ci = 0; ci < g.guess.length; ci++) {
+      var box = document.createElement('div'); box.className = 'hi-digit-box'; box.textContent = g.guess[ci];
+      num.appendChild(box);
+    }
+    left.appendChild(num);
+    var badges = document.createElement('div'); badges.className = 'rbadges';
+    if (g.s > 0) { var b = document.createElement('span'); b.className = 'badge bs'; b.textContent = g.s+'S'; badges.appendChild(b); }
+    if (g.b > 0) { var b = document.createElement('span'); b.className = 'badge bb'; b.textContent = g.b+'B'; badges.appendChild(b); }
+    if (g.isOut) { var b = document.createElement('span'); b.className = 'badge bo'; b.textContent = 'OUT'; badges.appendChild(b); }
+    item.appendChild(left); item.appendChild(badges);
+    hbox.appendChild(item);
+  }
+}
+
+/* ── SECRET INPUT ── */
+function addDigitRS(d) {
+  for (var i = 0; i < 4; i++) if (rsCurrent[i] === d) return;
+  if (rsCurrent[rsCursor] !== null) {
+    for (var i = 0; i < 4; i++) if (rsCurrent[i] === null) { rsCursor = i; break; }
+  }
+  if (rsCurrent[rsCursor] !== null) return;
+  rsCurrent[rsCursor] = d;
+  for (var i = rsCursor + 1; i < 4; i++) if (rsCurrent[i] === null) { rsCursor = i; break; }
+  renderDisplayRS();
+}
+function clearLastRS() {
+  if (rsCursor > 0 && rsCurrent[rsCursor] === null) rsCursor--;
+  rsCurrent[rsCursor] = null; renderDisplayRS();
+}
+function renderDisplayRS() {
+  var row = document.getElementById('rdrow-secret'); if (!row) return;
+  row.innerHTML = '';
+  for (var i = 0; i < 4; i++) {
+    var slot = document.createElement('div');
+    slot.className = 'dslot secret-slot' + (rsCurrent[i] ? ' filled' : '') + (i === rsCursor ? ' cursor-slot' : '');
+    if (rsCurrent[i]) { var sp = document.createElement('span'); sp.textContent = rsCurrent[i]; slot.appendChild(sp); }
+    (function(idx) { slot.addEventListener('click', function() { rsCursor = idx; renderDisplayRS(); }); })(i);
+    row.appendChild(slot);
+  }
+}
+function setRoomSecret() {
+  var count = 0; for (var i = 0; i < 4; i++) if (rsCurrent[i]) count++;
+  if (count !== 4) { setRoomMsg('4자리를 모두 입력해주세요'); return; }
+  if (rsCurrent[0] === '0') { setRoomMsg('첫 자리는 0이 될 수 없어요'); return; }
+  var sec = rsCurrent.join('');
+  setRoomMsg('대기 중...');
+  var upd = {};
+  upd['rooms/' + roomCode + '/' + myRole + '/secret'] = sec;
+  upd['rooms/' + roomCode + '/' + myRole + '/ready']  = true;
+  fbDb.ref().update(upd).then(function() {
+    fbDb.ref('rooms/' + roomCode).once('value').then(function(snap) {
+      var d = snap.val();
+      if (d.host.ready && d.guest.ready) {
+        fbDb.ref('rooms/' + roomCode + '/status').set('playing');
+      } else {
+        setRoomMsg('상대방 기다리는 중...');
+      }
+    });
+  });
+}
+
+/* ── GAME INPUT ── */
+function addDigitR(d) {
+  if (roomGameOver) return;
+  var sb = document.getElementById('room-subbtn');
+  if (sb && sb.disabled) return;
+  for (var i = 0; i < 4; i++) if (rcurrent[i] === d) return;
+  if (rcurrent[rcursor] !== null) {
+    for (var i = 0; i < 4; i++) if (rcurrent[i] === null) { rcursor = i; break; }
+  }
+  if (rcurrent[rcursor] !== null) return;
+  rcurrent[rcursor] = d;
+  for (var i = rcursor + 1; i < 4; i++) if (rcurrent[i] === null) { rcursor = i; break; }
+  renderDisplayR();
+}
+function clearLastR() {
+  if (rcursor > 0 && rcurrent[rcursor] === null) rcursor--;
+  rcurrent[rcursor] = null; renderDisplayR();
+}
+function renderDisplayR() {
+  var row = document.getElementById('rdrow'); if (!row) return;
+  row.innerHTML = '';
+  for (var i = 0; i < 4; i++) {
+    var slot = document.createElement('div');
+    slot.className = 'dslot' + (rcurrent[i] ? ' filled' : '') + (i === rcursor ? ' cursor-slot' : '');
+    if (rcurrent[i]) { var sp = document.createElement('span'); sp.textContent = rcurrent[i]; slot.appendChild(sp); }
+    (function(idx) { slot.addEventListener('click', function() { rcursor = idx; renderDisplayR(); }); })(i);
+    row.appendChild(slot);
+  }
+}
+function submitRoomGuess() {
+  if (roomGameOver) return;
+  var count = 0; for (var i = 0; i < 4; i++) if (rcurrent[i]) count++;
+  if (count !== 4) { setMsg('4자리를 모두 입력해주세요'); return; }
+  var guess = rcurrent.join('');
+  clearMsg();
+  var oppRole = myRole === 'host' ? 'guest' : 'host';
+  fbDb.ref('rooms/' + roomCode + '/' + oppRole + '/secret').once('value').then(function(snap) {
+    var opp = snap.val();
+    var s = 0, b = 0;
+    for (var i = 0; i < 4; i++) {
+      if (guess[i] === opp[i]) s++;
+      else if (opp.indexOf(guess[i]) >= 0) b++;
+    }
+    var isOut = s === 0 && b === 0;
+    var newKey = fbDb.ref('rooms/' + roomCode + '/' + myRole + 'Guesses').push().key;
+    var upd = {};
+    upd['rooms/' + roomCode + '/' + myRole + 'Guesses/' + newKey] = { guess: guess, s: s, b: b, isOut: isOut };
+    upd['rooms/' + roomCode + '/currentTurn'] = oppRole;
+    if (s === 4) {
+      upd['rooms/' + roomCode + '/status'] = 'done';
+      upd['rooms/' + roomCode + '/winner'] = myRole;
+    }
+    fbDb.ref().update(upd).then(function() {
+      rcurrent = [null,null,null,null]; rcursor = 0; renderDisplayR();
+    });
+  });
+}
+
+/* ── LEAVE ROOM ── */
+function leaveRoomSilent() {
+  if (roomListenerRef) { roomListenerRef.off(); roomListenerRef = null; }
+  roomCode = ''; myRole = ''; roomGameOver = false;
+}
+function leaveRoom() {
+  leaveRoomSilent();
+  setMode('game');
+}
+</script>
 </body>
 </html>
