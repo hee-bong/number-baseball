@@ -112,7 +112,7 @@
 
     .card-body { padding: 1.25rem; }
 
-    .mode-toggle { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--border-2); margin-bottom: 1.25rem; overflow: hidden; }
+    .mode-toggle { display: grid; grid-template-columns: 1fr 1fr 1fr; border: 1px solid var(--border-2); margin-bottom: 1.25rem; overflow: hidden; }
 
     .mtbtn { padding: 12px 8px; font-family: var(--px); font-size: 7px; letter-spacing: 1px; cursor: pointer; border: none; background: transparent; color: var(--text-dim); transition: all .12s; display: flex; flex-direction: column; align-items: center; gap: 6px; }
 
@@ -338,10 +338,16 @@
     /* ── ROOM MODE ── */
     .room-code-display { font-family: var(--px); font-size: 26px; color: var(--amber); letter-spacing: 8px; text-align: center; padding: .75rem 1rem; border: 2px solid var(--amber); border-radius: 8px; margin: .75rem 0; background: var(--surface-2); filter: drop-shadow(0 0 8px rgba(251,191,36,.3)); }
     .room-status-msg { font-family: var(--kr); font-size: 12px; color: var(--text-dim); text-align: center; margin: .25rem 0; }
-    .room-join-input { font-family: var(--px); font-size: 20px; color: var(--amber); background: var(--surface-2); border: 2px solid var(--border-2); border-radius: 8px; padding: .5rem 1rem; text-align: center; width: 100%; letter-spacing: 6px; text-transform: uppercase; outline: none; margin-bottom: .5rem; box-sizing: border-box; }
-    .room-join-input:focus { border-color: var(--amber); }
     .room-lobby-btns { display: flex; flex-direction: column; gap: .6rem; margin-top: .75rem; }
-    .room-divider { font-family: var(--px); font-size: 8px; color: var(--text-dim); text-align: center; letter-spacing: 3px; margin: .2rem 0; }
+    #room-lobby-slot .abtn { font-family: var(--kr); font-size: 15px; font-weight: 700; letter-spacing: 0; padding: 14px; }
+    .room-divider { font-family: var(--px); font-size: 8px; color: var(--text-dim); text-align: center; letter-spacing: 3px; margin: .4rem 0; }
+    .room-code-draft { font-family: var(--px); font-size: 24px; color: var(--amber); letter-spacing: 10px; text-align: center; padding: .6rem 1rem; border: 2px solid var(--border-2); background: var(--surface-2); margin-bottom: .4rem; }
+    .room-keypad { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; }
+    .rkkey { font-family: var(--px); font-size: 10px; padding: 9px 2px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); cursor: pointer; text-align: center; transition: all .1s; }
+    .rkkey:hover { background: var(--surface-3); border-color: var(--amber); color: var(--amber); }
+    .rkkey:active { transform: translateY(1px); }
+    .rkkey.del { color: var(--out); }
+    .rkkey.join { color: var(--bg); background: var(--amber); border-color: var(--amber); font-size: 8px; font-family: var(--kr); font-weight: 700; letter-spacing: 0; }
     .turn-bar { display: flex; align-items: center; justify-content: center; gap: 8px; padding: .5rem; background: var(--surface-2); border-radius: 8px; margin-bottom: .75rem; }
     .turn-chip { font-family: var(--px); font-size: 8px; padding: 5px 12px; border-radius: 4px; transition: all .2s; }
     .turn-chip.active { background: var(--amber); color: #000; }
@@ -381,16 +387,16 @@
 
     <div class="mode-toggle">
       <button class="mtbtn active" id="mode-game" onclick="setMode('game')">
-        GAME
-        <span class="mtbtn-desc" id="desc-game">숨겨진 수를 직접 맞춰요</span>
+        VS COM
+        <span class="mtbtn-desc" id="desc-game">컴퓨터가 숫자를 숨겨요</span>
       </button>
       <button class="mtbtn" id="mode-helper" onclick="setMode('helper')">
-        HELPER
-        <span class="mtbtn-desc" id="desc-helper">친구와 대결할 때 사용해요</span>
+        도우미
+        <span class="mtbtn-desc" id="desc-helper">친구와 직접 대결할 때</span>
       </button>
       <button class="mtbtn" id="mode-room" onclick="setMode('room')">
-        BATTLE
-        <span class="mtbtn-desc">실시간 1:1 대결</span>
+        1:1 배틀
+        <span class="mtbtn-desc">실시간 온라인 대결</span>
       </button>
     </div>
 
@@ -445,8 +451,47 @@
       <div class="room-lobby-btns">
         <button class="abtn primary" onclick="createRoom()">방 만들기</button>
         <div class="room-divider">— OR —</div>
-        <input class="room-join-input" id="room-code-input" placeholder="XXXXXX" maxlength="6">
-        <button class="abtn" onclick="joinRoom()">방 참가 ↵</button>
+        <div class="room-code-draft" id="room-code-draft">······</div>
+        <div class="room-keypad">
+          <button class="rkkey" onclick="addRoomCodeChar('1')">1</button>
+          <button class="rkkey" onclick="addRoomCodeChar('2')">2</button>
+          <button class="rkkey" onclick="addRoomCodeChar('3')">3</button>
+          <button class="rkkey" onclick="addRoomCodeChar('4')">4</button>
+          <button class="rkkey" onclick="addRoomCodeChar('5')">5</button>
+          <button class="rkkey" onclick="addRoomCodeChar('6')">6</button>
+          <button class="rkkey" onclick="addRoomCodeChar('7')">7</button>
+          <button class="rkkey" onclick="addRoomCodeChar('8')">8</button>
+          <button class="rkkey" onclick="addRoomCodeChar('9')">9</button>
+          <button class="rkkey" onclick="addRoomCodeChar('0')">0</button>
+          <button class="rkkey" onclick="addRoomCodeChar('A')">A</button>
+          <button class="rkkey" onclick="addRoomCodeChar('B')">B</button>
+          <button class="rkkey" onclick="addRoomCodeChar('C')">C</button>
+          <button class="rkkey" onclick="addRoomCodeChar('D')">D</button>
+          <button class="rkkey" onclick="addRoomCodeChar('E')">E</button>
+          <button class="rkkey" onclick="addRoomCodeChar('F')">F</button>
+          <button class="rkkey" onclick="addRoomCodeChar('G')">G</button>
+          <button class="rkkey" onclick="addRoomCodeChar('H')">H</button>
+          <button class="rkkey" onclick="addRoomCodeChar('I')">I</button>
+          <button class="rkkey" onclick="addRoomCodeChar('J')">J</button>
+          <button class="rkkey" onclick="addRoomCodeChar('K')">K</button>
+          <button class="rkkey" onclick="addRoomCodeChar('L')">L</button>
+          <button class="rkkey" onclick="addRoomCodeChar('M')">M</button>
+          <button class="rkkey" onclick="addRoomCodeChar('N')">N</button>
+          <button class="rkkey" onclick="addRoomCodeChar('O')">O</button>
+          <button class="rkkey" onclick="addRoomCodeChar('P')">P</button>
+          <button class="rkkey" onclick="addRoomCodeChar('Q')">Q</button>
+          <button class="rkkey" onclick="addRoomCodeChar('R')">R</button>
+          <button class="rkkey" onclick="addRoomCodeChar('S')">S</button>
+          <button class="rkkey" onclick="addRoomCodeChar('T')">T</button>
+          <button class="rkkey" onclick="addRoomCodeChar('U')">U</button>
+          <button class="rkkey" onclick="addRoomCodeChar('V')">V</button>
+          <button class="rkkey" onclick="addRoomCodeChar('W')">W</button>
+          <button class="rkkey" onclick="addRoomCodeChar('X')">X</button>
+          <button class="rkkey" onclick="addRoomCodeChar('Y')">Y</button>
+          <button class="rkkey" onclick="addRoomCodeChar('Z')">Z</button>
+          <button class="rkkey del" style="grid-column:span 2" onclick="delRoomCodeChar()">⌫ DEL</button>
+          <button class="rkkey join" style="grid-column:span 2" onclick="joinRoom()">참가 ↵</button>
+        </div>
       </div>
     </div>
 
@@ -723,6 +768,9 @@
     document.getElementById('room-lobby-slot').style.display       = isRoom   ? '' : 'none';
     document.getElementById('room-waiting-slot').style.display     = 'none';
     document.getElementById('room-setup-slot').style.display       = 'none';
+    document.getElementById('label-pick').style.display            = isRoom   ? 'none' : '';
+    document.getElementById('npool').style.display                 = isRoom   ? 'none' : '';
+    if (isRoom) { roomCodeDraft = ''; renderRoomCodeDisplay(); }
     document.getElementById('room-game-slot').style.display        = 'none';
     document.getElementById('room-setup-controls').style.display   = 'none';
     document.getElementById('room-game-controls').style.display    = 'none';
@@ -1166,10 +1214,13 @@
         else if (helperTab === 'my') addDigitH(e.key);
         else addDigitT(e.key);
       } else if (mode === 'room') {
-        var rss = document.getElementById('room-setup-slot');
-        if (rss && rss.style.display !== 'none') addDigitRS(e.key);
-        else addDigitR(e.key);
+        var rls = document.getElementById('room-lobby-slot');
+        if (rls && rls.style.display !== 'none') addRoomCodeChar(e.key);
+        else { var rss = document.getElementById('room-setup-slot'); if (rss && rss.style.display !== 'none') addDigitRS(e.key); else addDigitR(e.key); }
       }
+    } else if (/^[a-zA-Z]$/.test(e.key) && mode === 'room') {
+      var rlsA = document.getElementById('room-lobby-slot');
+      if (rlsA && rlsA.style.display !== 'none') addRoomCodeChar(e.key.toUpperCase());
     } else if (e.key === 'Backspace') {
       if (mode === 'game' && !gameOver) clearLast();
       else if (mode === 'helper') {
@@ -1177,9 +1228,9 @@
         else if (helperTab === 'my') clearLastH();
         else clearLastT();
       } else if (mode === 'room') {
-        var rss2 = document.getElementById('room-setup-slot');
-        if (rss2 && rss2.style.display !== 'none') clearLastRS();
-        else clearLastR();
+        var rlsB = document.getElementById('room-lobby-slot');
+        if (rlsB && rlsB.style.display !== 'none') delRoomCodeChar();
+        else { var rss2 = document.getElementById('room-setup-slot'); if (rss2 && rss2.style.display !== 'none') clearLastRS(); else clearLastR(); }
       }
     } else if (e.key === 'Enter') {
       if (mode === 'game' && !gameOver) submitGuess();
@@ -1188,9 +1239,9 @@
         else if (helperTab === 'my') submitHelper();
         else submitTheirGuess();
       } else if (mode === 'room') {
-        var rss3 = document.getElementById('room-setup-slot');
-        if (rss3 && rss3.style.display !== 'none') setRoomSecret();
-        else submitRoomGuess();
+        var rlsC = document.getElementById('room-lobby-slot');
+        if (rlsC && rlsC.style.display !== 'none') joinRoom();
+        else { var rss3 = document.getElementById('room-setup-slot'); if (rss3 && rss3.style.display !== 'none') setRoomSecret(); else submitRoomGuess(); }
       }
     }
   });
@@ -1275,6 +1326,24 @@ var roomCode = '', myRole = '', roomListenerRef = null;
 var rcurrent = [null,null,null,null], rcursor = 0;
 var rsCurrent = [null,null,null,null], rsCursor = 0;
 var roomGameOver = false;
+var roomCodeDraft = '';
+
+function renderRoomCodeDisplay() {
+  var el = document.getElementById('room-code-draft');
+  if (!el) return;
+  var s = '';
+  for (var i = 0; i < 6; i++) s += i < roomCodeDraft.length ? roomCodeDraft[i] : '·';
+  el.textContent = s;
+}
+function addRoomCodeChar(c) {
+  if (roomCodeDraft.length >= 6) return;
+  roomCodeDraft += c.toUpperCase();
+  renderRoomCodeDisplay();
+}
+function delRoomCodeChar() {
+  roomCodeDraft = roomCodeDraft.slice(0, -1);
+  renderRoomCodeDisplay();
+}
 
 function genRoomCode() {
   var c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', s = '';
@@ -1304,7 +1373,7 @@ function createRoom() {
 
 function joinRoom() {
   initFb();
-  var code = document.getElementById('room-code-input').value.toUpperCase().trim();
+  var code = roomCodeDraft.toUpperCase().trim();
   if (code.length !== 6) { setMsg('6자리 코드를 입력해주세요'); return; }
   fbDb.ref('rooms/' + code).once('value').then(function(snap) {
     var d = snap.val();
@@ -1365,6 +1434,10 @@ function showSlot(which) {
   });
   document.getElementById('room-setup-controls').style.display = (which === 'setup') ? '' : 'none';
   document.getElementById('room-game-controls').style.display  = (which === 'game')  ? '' : 'none';
+  var showPool = (which === 'setup' || which === 'game');
+  document.getElementById('label-pick').style.display = showPool ? '' : 'none';
+  document.getElementById('npool').style.display      = showPool ? '' : 'none';
+  if (which === 'lobby') { roomCodeDraft = ''; renderRoomCodeDisplay(); }
   if (which === 'setup') {
     rsCurrent = [null,null,null,null]; rsCursor = 0;
     renderDisplayRS();
