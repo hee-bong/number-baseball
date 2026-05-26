@@ -357,7 +357,7 @@
     .rkkey:hover { background: var(--surface-3); border-color: var(--amber); color: var(--amber); }
     .rkkey:active { transform: translateY(1px); }
     .rkkey.del { color: var(--out); }
-    .rkkey.join { color: var(--bg); background: var(--amber); border-color: var(--amber); font-size: 13px; font-family: var(--kr); font-weight: 700; letter-spacing: 0; }
+    .rkkey.join { color: var(--bg); background: var(--amber); border-color: var(--amber); font-size: 9px; font-family: var(--px); letter-spacing: 1px; }
     .turn-bar { display: flex; align-items: center; justify-content: center; gap: 8px; padding: .5rem; background: var(--surface-2); border-radius: 8px; margin-bottom: .75rem; }
     .turn-chip { font-family: var(--px); font-size: 8px; padding: 5px 12px; border-radius: 4px; transition: all .2s; }
     .turn-chip.active { background: var(--amber); color: #000; }
@@ -503,7 +503,7 @@
           <button class="rkkey" onclick="addRoomCodeChar('Y')">Y</button>
           <button class="rkkey" onclick="addRoomCodeChar('Z')">Z</button>
           <button class="rkkey del" style="grid-column:span 2" onclick="delRoomCodeChar()">⌫ DEL</button>
-          <button class="rkkey join" style="grid-column:span 2" onclick="joinRoom()">참가 ↵</button>
+          <button class="rkkey join" style="grid-column:span 2" onclick="joinRoom()">JOIN ↵</button>
           <button class="rkkey" style="grid-column:span 10;font-family:var(--kr);font-size:12px;font-weight:700;letter-spacing:0;padding:9px;" onclick="pasteRoomCode()">코드 붙여넣기</button>
         </div>
       </div>
